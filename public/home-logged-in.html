@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome - Profile Builder</title>
+    <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-icon-container">
+            <a href="/" class="site-logo">🏠</a>
+        </div>
+        <div class="nav-group-left">
+            <a href="/explore.html" id="exploreBtn" class="nav-button">Explore</a>
+        </div>
+        <div class="profile-container">
+            <div class="profile-pic"></div>
+        </div>
+        <div class="nav-group-right">
+            <a href="/leaderboard.html" id="leaderboardBtn" class="nav-button">Leaderboard</a>
+        </div>
+        <div class="settings-dropdown">
+            <button onclick="toggleSettings()" class="settings-btn">⚙️</button>
+            <div id="settingsDropdown" class="dropdown-content">
+                <a href="/dashboard.html">Projects</a>
+                <a href="/profile.html">Update Profile</a>
+                <a href="#" id="logoutBtn">Logout</a>
+            </div>
+        </div>
+    </nav>
+
+    <section class="hero">
+        <div class="hero-content">
+            <h1 class="hero-title">Welcome Back!</h1>
+            <div class="quick-stats">
+                <div class="stat-card">
+                    <span class="stat-value" id="projectCount">0</span>
+                    <span class="stat-label">Active Projects</span>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-value" id="connectionCount">0</span>
+                    <span class="stat-label">New Connections</span>
+                </div>
+            </div>
+            <div class="action-buttons">
+                <a href="/explore.html" class="cta-button">Find Matches</a>
+                <a href="/dashboard.html" class="cta-button secondary">View Projects</a>
+                <a href="/profile.html" class="cta-button secondary">Edit Profile</a>
+            </div>
+        </div>
+    </section>
+
+    <section class="carousel-section">
+        <div class="section-header">
+            <h2>Popular Creators</h2>
+            <div class="carousel-controls">
+                <button class="carousel-arrow prev" onclick="moveCarousel('creators', 'prev')">←</button>
+                <button class="carousel-arrow next" onclick="moveCarousel('creators', 'next')">→</button>
+            </div>
+        </div>
+        <div class="carousel" id="creatorsCarousel">
+            <!-- Content will be loaded dynamically -->
+        </div>
+    </section>
+
+    <section class="carousel-section">
+        <div class="section-header">
+            <h2>Popular Brands</h2>
+            <div class="carousel-controls">
+                <button class="carousel-arrow prev" onclick="moveCarousel('brands', 'prev')">←</button>
+                <button class="carousel-arrow next" onclick="moveCarousel('brands', 'next')">→</button>
+            </div>
+        </div>
+        <div class="carousel" id="brandsCarousel">
+            <!-- Carousel items will be loaded here -->
+        </div>
+    </section>
+
+    <script src="/js/carousel.js"></script>
+    <script src="/js/scripts.js"></script>
+</body>
+</html> 

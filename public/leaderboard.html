@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Leaderboard - Profile Builder</title>
+    <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-icon-container">
+            <a href="/" class="site-logo">🏠</a>
+        </div>
+        <div class="nav-group-left">
+            <a href="/explore.html" id="exploreBtn" class="nav-button">Explore</a>
+        </div>
+        <div class="profile-container">
+            <div class="profile-pic"></div>
+        </div>
+        <div class="nav-group-right">
+            <a href="/leaderboard.html" id="leaderboardBtn" class="nav-button">Leaderboard</a>
+        </div>
+        <div class="settings-dropdown">
+            <button onclick="toggleSettings()" class="settings-btn">⚙️</button>
+            <div id="settingsDropdown" class="dropdown-content">
+                <a href="/dashboard.html">Projects</a>
+                <a href="/profile.html">Update Profile</a>
+                <a href="#" id="logoutBtn">Logout</a>
+            </div>
+        </div>
+    </nav>
+    <main>
+        <h2>Creator Leaderboard</h2>
+        <div class="filters">
+            <select id="category">
+                <option value="rating">By Rating</option>
+                <option value="project_count">By Projects</option>
+                <option value="views">By Views</option>
+            </select>
+        </div>
+        <div id="leaderboardContainer"></div>
+    </main>
+    <script src="/js/scripts.js"></script>
+</body>
+</html> 

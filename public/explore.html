@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Explore - Profile Builder</title>
+    <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-icon-container">
+            <a href="/" class="site-logo">🏠</a>
+        </div>
+        <div class="nav-group-left">
+            <a href="/explore.html" id="exploreBtn" class="nav-button">Explore</a>
+        </div>
+        <div class="profile-container">
+            <div class="profile-pic"></div>
+        </div>
+        <div class="nav-group-right">
+            <a href="/leaderboard.html" id="leaderboardBtn" class="nav-button">Leaderboard</a>
+        </div>
+        <div class="settings-dropdown">
+            <button onclick="toggleSettings()" class="settings-btn">⚙️</button>
+            <div id="settingsDropdown" class="dropdown-content">
+                <a href="/dashboard.html">Projects</a>
+                <a href="/profile.html">Update Profile</a>
+                <a href="#" id="logoutBtn">Logout</a>
+            </div>
+        </div>
+    </nav>
+    <div class="search-filter-container collapsed">
+        <div class="search-header">
+            <div class="search-input-container">
+                <input type="text" id="searchInput" placeholder="Search by name, skills, or tags...">
+            </div>
+            
+            <div class="search-button-container">
+                <button id="searchButton">🔍</button>
+            </div>
+            
+            <div class="filters-button-container">
+                <button class="toggle-filters-btn" onclick="toggleFilters()">
+                    Filters <span class="toggle-icon">▼</span>
+                </button>
+            </div>
+        </div>
+        <div class="filter-content">
+            <div class="filter-row">
+                <div class="filter-group content-type-filter">
+                    <label>Content:</label>
+                    <div class="toggle-switch">
+                        <input type="checkbox" id="contentTypeToggle">
+                        <label for="contentTypeToggle" class="slider">
+                            <span class="profiles">Profiles</span>
+                            <span class="projects">Projects</span>
+                        </label>
+                    </div>
+                </div>
+                <div class="filter-group user-type-filter">
+                    <label>Show:</label>
+                    <div class="toggle-switch">
+                        <input type="checkbox" id="userTypeToggle">
+                        <label for="userTypeToggle" class="slider">
+                            <span class="creator">Creators</span>
+                            <span class="brand">Brands</span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="explore-container" id="exploreContainer">
+        <!-- Profile cards will be loaded here -->
+    </div>
+    <div class="explore-container-projects" id="exploreContainerProjects" style="display: none;">
+        <!-- Project cards will be loaded here -->
+    </div>
+    <script src="/js/scripts.js"></script>
+</body>
+</html>

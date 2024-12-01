@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile Builder - Connect Creators & Brands</title>
+    <link rel="stylesheet" href="/css/styles.css">
+    <style>
+        /* Landing Page Specific Styles */
+        .hero {
+            background: #e8ffd1;
+            min-height: 80vh;
+            position: relative;
+            overflow: hidden;
+            padding: 60px 20px;
+        }
+
+        .hero-content {
+            max-width: 1500px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 2;
+            text-align: center;
+        }
+
+        .hero-title {
+            font-size: 8em;
+            line-height: 1;
+            color: #1a472a;
+            font-weight: 900;
+            margin-bottom: 40px;
+            position: relative;
+        }
+
+        .hero-signup {
+            margin-top: 40px;
+        }
+
+        .hero-signup-button {
+            display: inline-block;
+            padding: 20px 60px;
+            font-size: 1.5em;
+            background: #ffa726;
+            color: white;
+            text-decoration: none;
+            border-radius: 50px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .hero-signup-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+        }
+
+        .curved-shape {
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 60%;
+            height: 100%;
+            background: #ffa726;
+            border-radius: 50% 0 0 70%;
+            transform: translateX(20%);
+            z-index: 1;
+        }
+
+        .features {
+            padding: 100px 20px;
+            background: #1a472a;
+            color: white;
+            text-align: center;
+        }
+
+        .features h2 {
+            font-size: 3em;
+            margin-bottom: 60px;
+            color: #e8ffd1;
+        }
+
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 40px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .feature-card {
+            background: rgba(255,255,255,0.1);
+            padding: 40px;
+            border-radius: 20px;
+            transition: transform 0.3s ease;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-10px);
+        }
+
+        .feature-icon {
+            font-size: 3em;
+            margin-bottom: 20px;
+        }
+
+        .cta {
+            padding: 100px 20px;
+            background: #e8ffd1;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .cta h2 {
+            font-size: 6em;
+            line-height: 1;
+            color: #1a472a;
+            margin-bottom: 40px;
+        }
+
+        .cta-buttons {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+        }
+
+        .cta-button {
+            padding: 15px 40px;
+            border-radius: 30px;
+            font-size: 1.2em;
+            text-decoration: none;
+            transition: transform 0.3s ease;
+        }
+
+        .cta-button:hover {
+            transform: scale(1.05);
+        }
+
+        .cta-button:first-child {
+            background: #ffa726;
+            color: white;
+        }
+
+        .cta-button.secondary {
+            background: #1a472a;
+            color: white;
+        }
+
+        @media (max-width: 768px) {
+            .hero-title {
+                font-size: 4em;
+            }
+
+            .cta h2 {
+                font-size: 3em;
+            }
+
+            .curved-shape {
+                width: 100%;
+                transform: translateX(50%);
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Remove old navbar - it will be inserted by navbar.js -->
+    
+    <!-- Keep all existing content below -->
+    <section class="hero">
+        <div class="hero-content">
+            <h1 class="hero-title">Connect with the Perfect Partners</h1>
+            <p class="hero-subtitle">Whether you're a content creator or a brand, find your ideal collaboration match.</p>
+            <a href="/signup.html" class="hero-signup-button">Get Started</a>
+        </div>
+        <div class="curved-shape"></div>
+    </section>
+
+    <section class="features">
+        <h2>Why Choose Us</h2>
+        <div class="feature-grid">
+            <div class="feature-card">
+                <div class="feature-icon">🎯</div>
+                <h3>Perfect Matches</h3>
+                <p>Our advanced matching system connects you with partners that align with your goals.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">📊</div>
+                <h3>Analytics</h3>
+                <p>Track your success with detailed analytics and performance metrics.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">🤝</div>
+                <h3>Easy Collaboration</h3>
+                <p>Streamlined tools to make partnership management effortless.</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="cta">
+        <h2>Ready to Start?</h2>
+        <p>Join our community of creators and brands today.</p>
+        <div class="cta-buttons">
+            <a href="/signup.html" class="cta-button">Sign Up Now</a>
+            <a href="/login.html" class="cta-button secondary">Login</a>
+        </div>
+    </section>
+
+    <!-- Add navbar.js before other scripts -->
+    <script src="/components/navbar.js"></script>
+    <script src="/js/scripts.js"></script>
+</body>
+</html> 

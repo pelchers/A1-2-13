@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Profile Builder</title>
+    <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+    <main>
+        <div class="dashboard-container">
+            <!-- Metrics Overview Section -->
+            <section class="metrics-section">
+                <h2>Your Metrics</h2>
+                <div class="metrics-grid">
+                    <div class="metric">
+                        <span class="metric-icon">👥</span>
+                        <span class="metric-value" id="followerCount">0</span>
+                        <span class="metric-label">Followers</span>
+                    </div>
+                    <div class="metric">
+                        <span class="metric-icon">👁️</span>
+                        <span class="metric-value" id="viewCount">0</span>
+                        <span class="metric-label">Views</span>
+                    </div>
+                    <div class="metric">
+                        <span class="metric-icon">⭐</span>
+                        <span class="metric-value" id="watchCount">0</span>
+                        <span class="metric-label">Watchers</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Projects Section -->
+            <section class="projects-section">
+                <div class="projects-header">
+                    <h2>Your Projects</h2>
+                    <button onclick="window.location.href='/projects.html#new'" class="new-project-btn">+ New Project</button>
+                </div>
+                
+                <div class="projects-grid" id="projectsList">
+                    <!-- Projects will be loaded here -->
+                </div>
+            </section>
+
+            <!-- Project Creation Modal -->
+            <div id="projectModal" class="modal">
+                <div class="modal-content">
+                    <span class="close-modal" onclick="closeProjectModal()">&times;</span>
+                    <h3>Create New Project</h3>
+                    <form id="createProjectForm" onsubmit="createProject(event)">
+                        <div class="form-group">
+                            <label for="projectName">Project Name</label>
+                            <input type="text" id="projectName" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="projectDescription">Description</label>
+                            <textarea id="projectDescription" rows="4"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="projectType">Project Type</label>
+                            <select id="projectType" required>
+                                <option value="campaign">Marketing Campaign</option>
+                                <option value="content">Content Creation</option>
+                                <option value="sponsorship">Sponsorship</option>
+                                <option value="other">Other</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="projectStatus">Status</label>
+                            <select id="projectStatus" required>
+                                <option value="planning">Planning</option>
+                                <option value="in_progress">In Progress</option>
+                                <option value="completed">Completed</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="submit-btn">Create Project</button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Profile Overview Section -->
+            <section class="profile-section">
+                <h2>Profile Overview</h2>
+                <div class="profile-preview">
+                    <div class="profile-image-large" id="profileImage">
+                        <!-- Profile image will be loaded here -->
+                    </div>
+                    <h1 id="displayName"></h1>
+                    <p class="bio" id="userBio"></p>
+                    <a href="/profile.html" class="edit-profile-btn">Edit Profile</a>
+                </div>
+            </section>
+
+            <!-- Recent Activity Section -->
+            <section class="activity-section">
+                <h2>Recent Activity</h2>
+                <div class="activity-feed" id="activityFeed">
+                    <!-- Activity items will be loaded here -->
+                </div>
+            </section>
+
+            <!-- Suggested Matches Section -->
+            <section class="matches-section">
+                <h2>Suggested Matches</h2>
+                <div class="matches-grid" id="suggestedMatches">
+                    <!-- Suggested matches will be loaded here -->
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <script src="/components/navbar.js"></script>
+    <script src="/js/scripts.js"></script>
+    <script src="/js/projects.js"></script>
+    <script src="/js/dashboard.js"></script>
+</body>
+</html> 

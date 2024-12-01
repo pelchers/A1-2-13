@@ -1,0 +1,37 @@
+# Learning Log
+
+[Previous content remains unchanged...]
+
+## JavaScript Hierarchy and Loading
+
+Q: How does JavaScript file loading work in HTML?
+A: JavaScript files are loaded and executed in the order they appear in HTML. Later scripts can override functions/variables from earlier scripts, with the last definition "winning".
+
+Q: What is the hierarchy of JavaScript code execution?
+A: The hierarchy from highest to lowest precedence is:
+1. Inline JavaScript (in HTML attributes)
+2. Internal JavaScript (in <script> tags)
+3. External JavaScript (in separate .js files)
+
+Example:
+```html
+<!-- 1. Inline JavaScript (highest) -->
+<button onclick="doSomething()">Click</button>
+
+<!-- 2. Internal JavaScript -->
+<script>
+  function doSomething() { }
+</script>
+
+<!-- 3. External JavaScript (lowest) -->
+<script src="/js/scripts.js"></script>
+```
+
+Q: How is JavaScript hierarchy different from CSS?
+A: Unlike CSS which merges styles:
+- JavaScript uses execution order rather than cascading
+- Functions can be completely redefined
+- Event listeners stack instead of overriding
+- Page-specific scripts can override global scripts
+
+[Rest of the existing content remains unchanged...] 

@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Projects - Profile Builder</title>
+    <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+    <!-- Navbar will be inserted by navbar.js -->
+
+    <main class="projects-page">
+        <div class="projects-container">
+            <div class="projects-list-section">
+                <div class="projects-header">
+                    <h2>Your Projects</h2>
+                    <button onclick="createNewProject()" class="new-project-btn">+ New Project</button>
+                </div>
+                <div id="projectsList" class="projects-list">
+                    <!-- Projects will be loaded here -->
+                </div>
+            </div>
+            <div class="project-form-section">
+                <div id="projectForm" class="project-form">
+                    <!-- Project form will be loaded here -->
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="/components/navbar.js"></script>
+    <script src="/js/projects.js"></script>
+</body>
+</html> 

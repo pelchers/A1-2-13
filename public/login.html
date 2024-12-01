@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Profile Builder</title>
+    <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-icon-container">
+            <a href="/" class="site-logo">🏠</a>
+        </div>
+        <a href="/explore.html" class="nav-button">Explore</a>
+        <div class="profile-container">
+            <div class="profile-pic"></div>
+        </div>
+        <a href="/leaderboard.html" class="nav-button">Leaderboard</a>
+        <div class="settings-menu">
+            <span class="settings-icon">⚙️</span>
+            <div class="settings-dropdown">
+                <a href="/profile.html">Update Profile</a>
+                <a href="#" id="logoutBtn">Logout</a>
+            </div>
+        </div>
+    </nav>
+    <main>
+        <h2>Login</h2>
+        <form id="loginForm">
+            <div>
+                <label for="email">Email:</label>
+                <input type="email" id="email" name="email" required>
+            </div>
+            <div>
+                <label for="password">Password:</label>
+                <input type="password" id="password" name="password" required>
+            </div>
+            <button type="submit">Login</button>
+        </form>
+    </main>
+    <script src="/js/scripts.js"></script>
+</body>
+</html> 

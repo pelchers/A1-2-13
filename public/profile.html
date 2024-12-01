@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Profile - Profile Builder</title>
+    <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+    <!-- Remove old navbar - it will be inserted by navbar.js -->
+    
+    <!-- Keep all existing content below -->
+    <main>
+        <h2>My Profile</h2>
+        <div id="message-container"></div>
+        <form id="profileUpdateForm">
+            <!-- Profile Type Selector -->
+            <div class="form-group profile-type-selector">
+                <label>Profile Type:</label>
+                <div class="toggle-switch">
+                    <input type="checkbox" id="profileTypeToggle">
+                    <label for="profileTypeToggle" class="slider">
+                        <span class="creator">Creator</span>
+                        <span class="brand">Brand</span>
+                    </label>
+                </div>
+            </div>
+
+            <!-- Basic Info Section -->
+            <div class="form-section">
+                <h3>Basic Information</h3>
+                <div class="form-group">
+                    <label for="name">Display Name:</label>
+                    <input type="text" id="name" name="name" required>
+                </div>
+                <div class="form-group">
+                    <label for="bio">Bio:</label>
+                    <textarea id="bio" name="bio"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="skills">Skills (comma-separated):</label>
+                    <input type="text" id="skills" name="skills">
+                </div>
+            </div>
+
+            <!-- Add this after the Basic Information section -->
+            <div class="form-section">
+                <div class="profile-image-container">
+                    <div class="profile-image-preview" id="profileImagePreview">📷</div>
+                    <input type="file" id="profileImage" name="profile_image" class="profile-image-upload" accept="image/*">
+                    <label for="profileImage" class="profile-image-button">Upload Profile Picture</label>
+                </div>
+            </div>
+
+            <!-- Creator Fields -->
+            <div id="creatorFields" class="form-section type-specific-fields">
+                <h3>Creator Details</h3>
+                <div class="form-group">
+                    <label for="creator_specialties">Specialties (comma-separated):</label>
+                    <input type="text" id="creator_specialties" name="creator_specialties">
+                </div>
+                <div class="form-group">
+                    <label for="creator_platforms">Platforms (comma-separated):</label>
+                    <input type="text" id="creator_platforms" name="creator_platforms">
+                </div>
+                <div class="form-group">
+                    <label for="audience_size">Audience Size:</label>
+                    <input type="number" id="audience_size" name="audience_size">
+                </div>
+                <div class="form-group">
+                    <label for="content_categories">Content Categories (comma-separated):</label>
+                    <input type="text" id="content_categories" name="content_categories">
+                </div>
+                <div class="form-group">
+                    <label for="portfolio_links">Portfolio Links:</label>
+                    <div id="portfolioLinksContainer" class="portfolio-links-container">
+                        <!-- Links will be added here dynamically -->
+                    </div>
+                    <button type="button" class="add-link-button" onclick="addPortfolioLink()">+ Add Link</button>
+                </div>
+                <div class="deal-preferences">
+                    <h4>Brand Deal Preferences</h4>
+                    <div class="form-group">
+                        <label for="creator_rate_range">Rate Range Per Post:</label>
+                        <div class="rate-range">
+                            <input type="number" id="creator_rate_min" name="creator_rate_min" placeholder="Min $">
+                            <span>to</span>
+                            <input type="number" id="creator_rate_max" name="creator_rate_max" placeholder="Max $">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Preferred Deal Types:</label>
+                        <div class="deal-options" id="preferred_deal_types">
+                            <div class="deal-option">
+                                <input type="checkbox" id="sponsored_posts" value="sponsored_posts">
+                                <label for="sponsored_posts">Sponsored Posts</label>
+                            </div>
+                            <div class="deal-option">
+                                <input type="checkbox" id="product_reviews" value="product_reviews">
+                                <label for="product_reviews">Product Reviews</label>
+                            </div>
+                            <div class="deal-option">
+                                <input type="checkbox" id="brand_ambassador" value="brand_ambassador">
+                                <label for="brand_ambassador">Brand Ambassador</label>
+                            </div>
+                            <div class="deal-option">
+                                <input type="checkbox" id="affiliate_marketing" value="affiliate_marketing">
+                                <label for="affiliate_marketing">Affiliate Marketing</label>
+                            </div>
+                            <div class="deal-option">
+                                <input type="checkbox" id="content_creation" value="content_creation">
+                                <label for="content_creation">Content Creation</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="collaboration_preferences">Collaboration Preferences:</label>
+                        <textarea id="collaboration_preferences" name="collaboration_preferences" 
+                                  placeholder="Describe your ideal brand collaboration..."></textarea>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Brand Fields -->
+            <div id="brandFields" class="form-section type-specific-fields">
+                <h3>Brand Details</h3>
+                <div class="form-group">
+                    <label for="brand_description">Brand Description:</label>
+                    <textarea id="brand_description" name="brand_description"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="industry_sectors">Industry Sectors (comma-separated):</label>
+                    <input type="text" id="industry_sectors" name="industry_sectors">
+                </div>
+                <div class="form-group">
+                    <label for="target_audience">Target Audience:</label>
+                    <input type="text" id="target_audience" name="target_audience">
+                </div>
+                <div class="form-group">
+                    <label for="campaign_preferences">Campaign Preferences (comma-separated):</label>
+                    <input type="text" id="campaign_preferences" name="campaign_preferences">
+                </div>
+                <div class="form-group">
+                    <label for="budget_range">Budget Range:</label>
+                    <select id="budget_range" name="budget_range">
+                        <option value="">Select Budget Range</option>
+                        <option value="0-1000">$0 - $1,000</option>
+                        <option value="1000-5000">$1,000 - $5,000</option>
+                        <option value="5000-10000">$5,000 - $10,000</option>
+                        <option value="10000+">$10,000+</option>
+                    </select>
+                </div>
+                <div class="deal-preferences">
+                    <h4>Creator Collaboration Preferences</h4>
+                    <div class="form-group">
+                        <label>Preferred Creator Types:</label>
+                        <div class="deal-options" id="preferred_creator_types">
+                            <div class="deal-option">
+                                <input type="checkbox" id="micro_influencers" value="micro_influencers">
+                                <label for="micro_influencers">Micro Influencers (1K-100K)</label>
+                            </div>
+                            <div class="deal-option">
+                                <input type="checkbox" id="macro_influencers" value="macro_influencers">
+                                <label for="macro_influencers">Macro Influencers (100K-1M)</label>
+                            </div>
+                            <div class="deal-option">
+                                <input type="checkbox" id="mega_influencers" value="mega_influencers">
+                                <label for="mega_influencers">Mega Influencers (1M+)</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Campaign Goals:</label>
+                        <div class="deal-options" id="campaign_goals">
+                            <div class="deal-option">
+                                <input type="checkbox" id="brand_awareness" value="brand_awareness">
+                                <label for="brand_awareness">Brand Awareness</label>
+                            </div>
+                            <div class="deal-option">
+                                <input type="checkbox" id="product_launch" value="product_launch">
+                                <label for="product_launch">Product Launch</label>
+                            </div>
+                            <div class="deal-option">
+                                <input type="checkbox" id="sales_conversion" value="sales_conversion">
+                                <label for="sales_conversion">Sales Conversion</label>
+                            </div>
+                            <div class="deal-option">
+                                <input type="checkbox" id="community_engagement" value="community_engagement">
+                                <label for="community_engagement">Community Engagement</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="collaboration_requirements">Collaboration Requirements:</label>
+                        <textarea id="collaboration_requirements" name="collaboration_requirements" 
+                                  placeholder="Describe your requirements for creators..."></textarea>
+                    </div>
+                </div>
+            </div>
+
+            <button type="submit">Update Profile</button>
+        </form>
+    </main>
+
+    <script src="/components/navbar.js"></script>
+    <script src="/js/scripts.js"></script>
+</body>
+</html> 
