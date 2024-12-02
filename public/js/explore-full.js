@@ -174,7 +174,7 @@ async function loadUsers() {
                         <!-- Watch Button - Update onclick handler -->
                         <button 
                             class="watch-button ${user.is_watched ? 'watching' : ''}" 
-                            onclick="toggleWatch(${user.id}, event)"
+                            onclick="handleUserWatch(${user.id}, event)"
                             title="Watch this profile"
                             type="button"
                         >
@@ -648,6 +648,47 @@ window.handleProjectWatch = async function(projectId, event) {
         }
 
         // Update button state and icon
+        const watchButton = event.target.closest('.watch-button');
+        if (watchButton) {
+            watchButton.classList.toggle('watching', data.isWatching);
+            const watchCount = watchButton.querySelector('.watch-count');
+            if (watchCount) {
+                watchCount.textContent = data.watchCount || 0;
+            }
+        }
+
+        showMessage(data.message, 'success');
+    } catch (error) {
+        console.error('Error:', error);
+        showMessage(error.message || 'Failed to update watch status', 'error');
+    }
+}
+
+// Add the handleUserWatch function
+window.handleUserWatch = async function(userId, event) {
+    event.preventDefault();
+    event.stopPropagation();
+    
+    if (!localStorage.getItem('token')) {
+        window.location.href = '/login.html';
+        return;
+    }
+
+    try {
+        const response = await fetch(`/api/users/${userId}/watch`, {
+            method: 'POST',
+            headers: {
+                'Authorization': `Bearer ${localStorage.getItem('token')}`
+            }
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+            throw new Error(data.message || 'Failed to update watch status');
+        }
+
+        // Update button state and count
         const watchButton = event.target.closest('.watch-button');
         if (watchButton) {
             watchButton.classList.toggle('watching', data.isWatching);

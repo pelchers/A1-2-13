@@ -388,89 +388,97 @@ app.post('/api/profile/upload-image', authenticateToken, upload.single('profile_
     }
 });
 
-// Update watch endpoint to properly handle watch state
+// Add user watch endpoint
 app.post('/api/users/:userId/watch', authenticateToken, async (req, res) => {
     try {
-        const { userId } = req.params;
+        const targetUserId = parseInt(req.params.userId);
         const watcherId = req.user.id;
 
         // Start transaction
         await pool.query('BEGIN');
 
-        // Check if already watching
-        const watcherResult = await pool.query(
-            'SELECT watching_ids FROM users WHERE id = $1',
-            [watcherId]
-        );
-
-        const watchingIds = watcherResult.rows[0].watching_ids || [];
-        const isAlreadyWatching = watchingIds.includes(parseInt(userId));
-
-        let watchCount;
-        let isWatching;
-
-        if (isAlreadyWatching) {
-            // Remove watch from both users
-            await pool.query(
-                `UPDATE users 
-                 SET watching_ids = array_remove(watching_ids, $1)
-                 WHERE id = $2`,
-                [parseInt(userId), watcherId]
+        try {
+            // Get current watcher's watching_ids
+            const watcherResult = await pool.query(
+                'SELECT watching_ids FROM users WHERE id = $1',
+                [watcherId]
             );
 
-            const result = await pool.query(
-                `UPDATE users 
-                 SET watched_by_ids = array_remove(watched_by_ids, $1),
-                     account_watchers = GREATEST((account_watchers - 1), 0)
-                 WHERE id = $2
-                 RETURNING account_watchers`,
-                [watcherId, userId]
+            // Get target user's watched_by_ids and account_watchers
+            const targetResult = await pool.query(
+                'SELECT watched_by_ids, account_watchers FROM users WHERE id = $1',
+                [targetUserId]
             );
 
-            watchCount = result.rows[0].account_watchers;
-            isWatching = false;
+            const watchingIds = watcherResult.rows[0].watching_ids || [];
+            const isWatching = watchingIds.includes(targetUserId);
 
-            console.log('Watch removed:', { watcherId, userId, watchCount, isWatching });
-        } else {
-            // Add watch to both users
-            await pool.query(
-                `UPDATE users 
-                 SET watching_ids = array_append(watching_ids, $1)
-                 WHERE id = $2`,
-                [parseInt(userId), watcherId]
-            );
+            let message;
+            let watchCount;
 
-            const result = await pool.query(
-                `UPDATE users 
-                 SET watched_by_ids = array_append(watched_by_ids, $1),
-                     account_watchers = account_watchers + 1
-                 WHERE id = $2
-                 RETURNING account_watchers`,
-                [watcherId, userId]
-            );
+            if (isWatching) {
+                // Remove from watching_ids of watcher
+                await pool.query(
+                    `UPDATE users 
+                     SET watching_ids = array_remove(watching_ids, $1)
+                     WHERE id = $2`,
+                    [targetUserId, watcherId]
+                );
 
-            watchCount = result.rows[0].account_watchers;
-            isWatching = true;
+                // Remove from watched_by_ids of target and decrease account_watchers
+                const result = await pool.query(
+                    `UPDATE users 
+                     SET watched_by_ids = array_remove(watched_by_ids, $1),
+                         account_watchers = GREATEST(COALESCE(account_watchers, 0) - 1, 0)
+                     WHERE id = $2
+                     RETURNING account_watchers`,
+                    [watcherId, targetUserId]
+                );
 
-            console.log('Watch added:', { watcherId, userId, watchCount, isWatching });
+                watchCount = result.rows[0].account_watchers;
+                message = 'Successfully unwatched user';
+            } else {
+                // Add to watching_ids of watcher
+                await pool.query(
+                    `UPDATE users 
+                     SET watching_ids = array_append(watching_ids, $1)
+                     WHERE id = $2`,
+                    [targetUserId, watcherId]
+                );
+
+                // Add to watched_by_ids of target and increase account_watchers
+                const result = await pool.query(
+                    `UPDATE users 
+                     SET watched_by_ids = array_append(watched_by_ids, $1),
+                         account_watchers = COALESCE(account_watchers, 0) + 1
+                     WHERE id = $2
+                     RETURNING account_watchers`,
+                    [watcherId, targetUserId]
+                );
+
+                watchCount = result.rows[0].account_watchers;
+                message = 'Successfully watching user';
+            }
+
+            await pool.query('COMMIT');
+
+            res.json({
+                watchCount,
+                isWatching: !isWatching,
+                message
+            });
+
+        } catch (error) {
+            await pool.query('ROLLBACK');
+            throw error;
         }
 
-        await pool.query('COMMIT');
-
-        // Return complete response with all required properties
-        res.json({ 
-            watchCount,
-            isWatching,
-            message: isWatching ? 'Successfully watching user' : 'Successfully unwatched user'
-        });
-
     } catch (error) {
-        await pool.query('ROLLBACK');
         console.error('Watch toggle error:', error);
-        res.status(500).json({ 
-            message: 'Error toggling watch status',
-            isWatching: false,
-            watchCount: 0
+        res.status(500).json({
+            message: 'Error updating watch status',
+            watchCount: 0,
+            isWatching: false
         });
     }
 });
