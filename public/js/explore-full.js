@@ -415,6 +415,17 @@ async function loadProjectCards() {
                 <div class="card-inner">
                     <div class="card-front">
                         <div class="project-info">
+                            <!-- Add watch button at the top -->
+                            <button 
+                                class="watch-button ${project.is_watched ? 'watching' : ''}" 
+                                onclick="handleProjectWatch(${project.id}, event)"
+                                title="Watch this project"
+                                type="button"
+                            >
+                                <span class="watch-icon">⭐</span>
+                                <span class="watch-count">${project.watch_count || 0}</span>
+                            </button>
+
                             <h3>${project.name}</h3>
                             <div class="project-meta">
                                 <span class="project-type-badge ${project.project_type}">
@@ -609,5 +620,46 @@ window.toggleFilters = function() {
     } else {
         filterContent.style.display = 'none';
         document.querySelector('.toggle-icon').textContent = '▼';
+    }
+}
+
+// Make handleProjectWatch globally available
+window.handleProjectWatch = async function(projectId, event) {
+    event.preventDefault();
+    event.stopPropagation();
+    
+    if (!localStorage.getItem('token')) {
+        window.location.href = '/login.html';
+        return;
+    }
+
+    try {
+        const response = await fetch(`/api/projects/${projectId}/watch`, {
+            method: 'POST',
+            headers: {
+                'Authorization': `Bearer ${localStorage.getItem('token')}`
+            }
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+            throw new Error(data.message || 'Failed to update watch status');
+        }
+
+        // Update button state and icon
+        const watchButton = event.target.closest('.watch-button');
+        if (watchButton) {
+            watchButton.classList.toggle('watching', data.isWatching);
+            const watchCount = watchButton.querySelector('.watch-count');
+            if (watchCount) {
+                watchCount.textContent = data.watchCount || 0;
+            }
+        }
+
+        showMessage(data.message, 'success');
+    } catch (error) {
+        console.error('Error:', error);
+        showMessage(error.message || 'Failed to update watch status', 'error');
     }
 }

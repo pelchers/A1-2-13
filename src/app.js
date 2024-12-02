@@ -848,7 +848,11 @@ app.get('/api/explore/projects', authenticateToken, async (req, res) => {
             SELECT p.*, 
                 u.username as creator_name,
                 u.profile_type as creator_type,
-                COUNT(DISTINCT pc.user_id) as collaborator_count
+                COUNT(DISTINCT pc.user_id) as collaborator_count,
+                CASE 
+                    WHEN $1 = ANY(p.watcher_ids) THEN true 
+                    ELSE false 
+                END as is_watched
             FROM projects p
             LEFT JOIN users u ON p.user_id = u.id
             LEFT JOIN project_collaborators pc ON p.id = pc.project_id
@@ -856,13 +860,111 @@ app.get('/api/explore/projects', authenticateToken, async (req, res) => {
             ORDER BY p.created_at DESC
         `;
         
-        const result = await pool.query(query);
-        console.log('Projects fetched:', result.rows); // Debug log
+        const result = await pool.query(query, [req.user.id]);
+        console.log('Projects fetched:', result.rows);
         
         res.json(result.rows);
     } catch (error) {
         console.error('Error fetching projects:', error);
         res.status(500).json({ message: 'Error fetching projects' });
+    }
+});
+
+// Add project watch endpoint
+app.post('/api/projects/:projectId/watch', authenticateToken, async (req, res) => {
+    try {
+        const { projectId } = req.params;
+        const userId = req.user.id;
+
+        // First check if project exists
+        const projectCheck = await pool.query(
+            'SELECT id, watch_count, watcher_ids FROM projects WHERE id = $1',
+            [projectId]
+        );
+
+        if (projectCheck.rows.length === 0) {
+            return res.status(404).json({ 
+                message: 'Project not found',
+                watchCount: 0,
+                isWatching: false
+            });
+        }
+
+        // Start transaction
+        await pool.query('BEGIN');
+
+        // Get current user's watched projects
+        const userResult = await pool.query(
+            'SELECT watched_project_ids FROM users WHERE id = $1',
+            [userId]
+        );
+
+        const watchedProjectIds = userResult.rows[0].watched_project_ids || [];
+        const isWatching = watchedProjectIds.includes(parseInt(projectId));
+
+        let watchCount;
+        let message;
+
+        if (isWatching) {
+            // Remove project from user's watched list
+            await pool.query(
+                `UPDATE users 
+                 SET watched_project_ids = array_remove(watched_project_ids, $1)
+                 WHERE id = $2`,
+                [parseInt(projectId), userId]
+            );
+
+            // Update project's watchers and count
+            const result = await pool.query(
+                `UPDATE projects 
+                 SET watcher_ids = array_remove(watcher_ids, $1),
+                     watch_count = GREATEST((watch_count - 1), 0)
+                 WHERE id = $2
+                 RETURNING watch_count`,
+                [userId, projectId]
+            );
+
+            watchCount = result.rows[0].watch_count;
+            message = 'Project unwatched successfully';
+        } else {
+            // Add project to user's watched list
+            await pool.query(
+                `UPDATE users 
+                 SET watched_project_ids = array_append(watched_project_ids, $1)
+                 WHERE id = $2`,
+                [parseInt(projectId), userId]
+            );
+
+            // Update project's watchers and count
+            const result = await pool.query(
+                `UPDATE projects 
+                 SET watcher_ids = array_append(watcher_ids, $1),
+                     watch_count = COALESCE(watch_count, 0) + 1
+                 WHERE id = $2
+                 RETURNING watch_count`,
+                [userId, projectId]
+            );
+
+            watchCount = result.rows[0].watch_count;
+            message = 'Project watched successfully';
+        }
+
+        await pool.query('COMMIT');
+
+        res.json({ 
+            watchCount,
+            isWatching: !isWatching,
+            message
+        });
+
+    } catch (error) {
+        await pool.query('ROLLBACK');
+        console.error('Watch toggle error:', error);
+        res.status(500).json({ 
+            message: 'Error updating watch status',
+            watchCount: 0,
+            isWatching: false
+        });
     }
 });
 
