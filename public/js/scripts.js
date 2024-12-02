@@ -1815,6 +1815,12 @@ async function initializeProfilePic() {
     }
 }
 
+
+
+// DASHBOARD PAGE FUNCTIONS 
+
+
+
 // Add viewProjects function - dashboard page
 function viewProjects() {
     const urlParams = new URLSearchParams(window.location.search);
