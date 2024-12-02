@@ -9,7 +9,7 @@ function createNavbar() {
             <a href="/explore.html" id="exploreBtn" class="nav-button">Explore</a>
         </div>
         <div class="profile-container">
-            <div class="profile-pic" onclick="window.location.href='/public-profile.html'"></div>
+            <div class="profile-pic" onclick="window.location.href='/profile.html'"></div>
         </div>
         <div class="nav-group-right">
             <a href="/leaderboard.html" id="leaderboardBtn" class="nav-button">Leaderboard</a>
@@ -52,8 +52,10 @@ async function initializeProfilePic() {
         if (profilePic) {
             if (userData.profile_image) {
                 profilePic.innerHTML = `<img src="${userData.profile_image}" alt="Profile">`;
+                profilePic.onclick = () => window.location.href = `/public-profile.html?id=${userData.id}`;
             } else {
                 profilePic.innerHTML = userData.display_name?.charAt(0).toUpperCase() || '👤';
+                profilePic.onclick = () => window.location.href = `/public-profile.html?id=${userData.id}`;
             }
         }
     } catch (error) {

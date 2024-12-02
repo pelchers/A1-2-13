@@ -1,4 +1,4 @@
-require('dotenv').config();
+frequire('dotenv').config();
 const express = require('express');
 const path = require('path');
 const { Pool } = require('pg');
