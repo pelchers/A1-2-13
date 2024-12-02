@@ -1290,6 +1290,19 @@ button:hover {
     justify-content: flex-end;
 }
 
+/* Filter Content */
+.filter-content {
+    padding: 20px 0;
+    transition: all 0.3s ease;
+}
+
+/* Remove these classes as we're using direct style manipulation */
+.filter-content.show,
+.filter-content.collapsed {
+    display: none;
+}
+
+/* Update toggle button styles */
 .toggle-filters-btn {
     white-space: nowrap;
     padding: 8px 16px;
@@ -1302,46 +1315,12 @@ button:hover {
     gap: 6px;
     font-size: 14px;
     color: #5ac3b0;
+    transition: all 0.3s ease;
 }
 
-/* Filter Content */
-.filter-content {
-    max-height: 500px;
-    overflow: hidden;
-    transition: max-height 0.3s ease-in-out;
-    padding-top: 40px;
-}
-
-.filter-content label {
-    color: #333;
-}
-
-.filter-content .select-option label {
-    color: #333;
-}
-
-.search-filter-container.collapsed .filter-content {
-    max-height: 0;
-    padding: 0;
-    overflow: hidden;
-}
-
-/* Update button styles */
-.primary-button {
-    background: #007bff;
+.toggle-filters-btn:hover {
+    background: #5ac3b0;
     color: white;
-    border: none;
-    padding: 8px 16px;
-    border-radius: 4px;
-    cursor: pointer;
-}
-
-.secondary-button {
-    background: #f8f9fa;
-    border: 1px solid #ddd;
-    padding: 8px 16px;
-    border-radius: 4px;
-    cursor: pointer;
 }
 
 /* Update Form and Main Container Styles */
@@ -2393,7 +2372,6 @@ main {
     border-radius: 12px;
     margin-bottom: 30px;
     box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-    text-align: center;
 }
 
 .profile-preview {

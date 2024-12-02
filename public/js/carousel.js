@@ -139,5 +139,4 @@ async function loadCarouselData() {
     } catch (error) {
         console.error("Error fetching or rendering projects:", error);
     }
-}
-*/
+}*/
