@@ -3433,3 +3433,84 @@ main {
 .project-card.flipped .card-inner {
     transform: rotateY(180deg);
 }
+
+.project-view-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.project-details-section {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
+}
+
+.project-details-section > div {
+    background: white;
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.project-details-section > div:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+.project-meta {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.project-meta span {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 0.9em;
+    color: #666;
+}
+
+.deal-details, .content-details {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.deal-details h3, .content-details h3 {
+    margin-bottom: 10px;
+    font-size: 1.2em;
+    color: #333;
+}
+
+.deal-details p, .content-details p {
+    margin: 0;
+    font-size: 0.9em;
+    color: #555;
+}
+
+.project-type-badge {
+    display: inline-block;
+    padding: 4px 12px;
+    border-radius: 15px;
+    font-size: 0.9em;
+    background: #f0f0f0;
+    color: #666;
+    margin-top: 5px;
+}
+
+.project-type-badge.brand_deal {
+    background: #e3f2fd;
+    color: #1976d2;
+}
+
+.project-type-badge.creative_work {
+    background: #f3e5f5;
+    color: #7b1fa2;
+}

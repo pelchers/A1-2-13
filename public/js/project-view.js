@@ -7,10 +7,26 @@ document.addEventListener('DOMContentLoaded', async () => {
         return;
     }
 
-    await loadProjectDetails(projectId);
+    const currentUserId = await getCurrentUserId();
+    await loadProjectDetails(projectId, currentUserId);
 });
 
-async function loadProjectDetails(projectId) {
+async function getCurrentUserId() {
+    try {
+        const response = await fetch('/api/profile', {
+            headers: {
+                'Authorization': `Bearer ${localStorage.getItem('token')}`
+            }
+        });
+        const userData = await response.json();
+        return userData.id;
+    } catch (error) {
+        console.error('Error getting current user:', error);
+        return null;
+    }
+}
+
+async function loadProjectDetails(projectId, currentUserId) {
     try {
         const response = await fetch(`/api/projects/${projectId}`, {
             headers: {
@@ -24,6 +40,13 @@ async function loadProjectDetails(projectId) {
 
         const project = await response.json();
         renderProjectDetails(project);
+
+        // Show the edit button if the user is the creator
+        if (project.user_id === currentUserId) {
+            const editButton = document.getElementById('editProjectButton');
+            editButton.style.display = 'block';
+            editButton.onclick = () => window.location.href = `/projects.html?edit=${project.id}`;
+        }
     } catch (error) {
         console.error('Error loading project details:', error);
     }
@@ -34,16 +57,18 @@ function renderProjectDetails(project) {
     if (!container) return;
 
     container.innerHTML = `
-        <h1>${project.name}</h1>
-        <p>${project.description || 'No description available'}</p>
-        <div class="project-meta">
-            <span class="project-type-badge ${project.project_type}">
-                ${project.project_type === 'brand_deal' ? '🤝 Brand Deal' : '🎨 Creative Work'}
-            </span>
-            <span class="project-status">Status: ${project.status}</span>
-            <span class="project-date">Created: ${formatDate(project.created_at)}</span>
+        <div>
+            <h1>${project.name}</h1>
+            <p>${project.description || 'No description available'}</p>
+            <div class="project-meta">
+                <span class="project-type-badge ${project.project_type}">
+                    ${project.project_type === 'brand_deal' ? '🤝 Brand Deal' : '🎨 Creative Work'}
+                </span>
+                <span class="project-status">Status: ${project.status}</span>
+                <span class="project-date">Created: ${formatDate(project.created_at)}</span>
+            </div>
+            ${project.project_type === 'brand_deal' ? renderBrandDealDetails(project) : renderCreativeWorkDetails(project)}
         </div>
-        ${project.project_type === 'brand_deal' ? renderBrandDealDetails(project) : renderCreativeWorkDetails(project)}
     `;
 }
 
