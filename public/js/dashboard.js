@@ -14,6 +14,118 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     // Initialize metrics
     await loadUserMetrics(pageUserId || currentUserId);
+
+    // Add CSS styles for the watch button
+    const styles = `
+    .project-item {
+        position: relative;
+        background: white;
+        border-radius: 10px;
+        padding: 40px 20px 20px;
+        margin-bottom: 20px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        cursor: pointer;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .project-item:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    }
+
+    .project-item .watch-button {
+        position: absolute;
+        top: 15px;
+        right: 15px;
+        background: transparent;
+        border: none;
+        cursor: pointer;
+        padding: 5px;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        z-index: 2;
+    }
+
+    .project-item h3 {
+        font-size: 1.2em;
+        margin: 0;
+        padding-right: 40px; /* Make space for the star */
+        color: #333;
+    }
+
+    .project-item .project-type-badge {
+        display: inline-block;
+        padding: 4px 12px;
+        border-radius: 15px;
+        font-size: 0.9em;
+        background: #f0f0f0;
+        color: #666;
+        margin-top: 5px;
+    }
+
+    .project-item .project-type-badge.brand_deal {
+        background: #e3f2fd;
+        color: #1976d2;
+    }
+
+    .project-item .project-type-badge.creative_work {
+        background: #f3e5f5;
+        color: #7b1fa2;
+    }
+
+    .project-item .project-meta {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        margin-top: 10px;
+        font-size: 0.9em;
+        color: #666;
+    }
+
+    .project-item .watch-button .watch-icon {
+        font-size: 1.2em;
+        color: #ccc;
+        transition: color 0.3s ease;
+    }
+
+    .project-item .watch-button.watching .watch-icon {
+        color: gold;
+    }
+
+    .project-item .watch-button .watch-count {
+        font-size: 0.9em;
+        color: #666;
+    }
+
+    .project-item .watch-button:hover {
+        transform: scale(1.1);
+        background: transparent;
+        box-shadow: none;
+    }
+
+    .project-item .project-status,
+    .project-item .project-date {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+    }
+
+    .projects-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 20px;
+        padding: 20px;
+    }
+    `;
+
+    // Add styles to document
+    const styleSheet = document.createElement("style");
+    styleSheet.textContent = styles;
+    document.head.appendChild(styleSheet);
 });
 
 // Function to load user metrics
@@ -87,8 +199,7 @@ function renderProjectsList(projects) {
     }
 
     listContainer.innerHTML = projects.map(project => `
-        <div class="project-item" onclick="editProject(${project.id})">
-            <!-- Add watch button -->
+        <div class="project-item" onclick="window.location.href='/project-view.html?id=${project.id}'">
             <button 
                 class="watch-button ${project.is_watched ? 'watching' : ''}" 
                 onclick="handleProjectWatch(${project.id}, event)"

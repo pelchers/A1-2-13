@@ -395,8 +395,6 @@ async function loadProjectCards() {
         }
 
         const data = await response.json();
-        console.log('Projects data:', data);
-        
         const projectsContainer = document.getElementById('exploreContainerProjects');
         if (!projectsContainer) {
             console.error('Projects container not found');
@@ -411,11 +409,11 @@ async function loadProjectCards() {
         projectsContainer.innerHTML = data.map(project => `
             <div class="project-card" 
                  data-searchable="${project.name} ${project.description || ''} ${project.project_type || ''} ${project.creator_name || ''}"
-                 data-creator-type="${project.creator_type}">
+                 data-creator-type="${project.creator_type}"
+                 onclick="window.location.href='/project-view.html?id=${project.id}'">
                 <div class="card-inner">
                     <div class="card-front">
                         <div class="project-info">
-                            <!-- Add watch button at the top -->
                             <button 
                                 class="watch-button ${project.is_watched ? 'watching' : ''}" 
                                 onclick="handleProjectWatch(${project.id}, event)"
@@ -456,55 +454,9 @@ async function loadProjectCards() {
                         </div>
                         <div class="card-flip-hint">Click to see more details</div>
                     </div>
-                    
-                    <div class="card-back">
-                        <div class="project-details">
-                            <h3>${project.name}</h3>
-                            <p>${project.description || 'No description available'}</p>
-                            
-                            <!-- Project Type Specific Details -->
-                            ${project.project_type === 'brand_deal' ? `
-                                <div class="deal-details">
-                                    <h4>Deal Information</h4>
-                                    <p><strong>Budget Range:</strong> ${project.budget_range || 'Not specified'}</p>
-                                    <p><strong>Timeline:</strong> ${project.timeline || 'Not specified'}</p>
-                                    <p><strong>Payment Format:</strong> ${project.payment_format || 'Not specified'}</p>
-                                </div>
-                                <div class="campaign-details">
-                                    <h4>Campaign Details</h4>
-                                    <p><strong>Target Audience:</strong> ${project.target_audience || 'Not specified'}</p>
-                                    <p><strong>Campaign Goals:</strong> ${project.campaign_goals || 'Not specified'}</p>
-                                </div>
-                            ` : `
-                                <div class="content-details">
-                                    <h4>Content Information</h4>
-                                    <p><strong>Content Type:</strong> ${project.content_category || 'Not specified'}</p>
-                                    <p><strong>Content Length:</strong> ${project.content_length || 'Not specified'}</p>
-                                    <p><strong>Technical Requirements:</strong> ${project.technical_requirements || 'Not specified'}</p>
-                                </div>
-                            `}
-                            
-                            <div class="project-actions">
-                                <button onclick="viewProject(${project.id})" class="view-project-btn">View Details</button>
-                            </div>
-                        </div>
-                        <div class="card-flip-hint">Click to return</div>
-                    </div>
                 </div>
             </div>
         `).join('');
-
-        // Add flip functionality to project cards
-        const cards = document.querySelectorAll('.project-card');
-        cards.forEach(card => {
-            card.addEventListener('click', function(e) {
-                if (!e.target.closest('.project-actions')) {
-                    this.querySelector('.card-inner')?.classList.toggle('flipped');
-                }
-            });
-        });
-
-        console.log('Project cards rendered');
     } catch (error) {
         console.error('Error loading projects:', error);
         const projectsContainer = document.getElementById('exploreContainerProjects');
