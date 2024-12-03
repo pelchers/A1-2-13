@@ -977,13 +977,14 @@ app.post('/api/projects/:projectId/watch', authenticateToken, async (req, res) =
 });
 
 // Route to get chats for a user
-app.get('/api/chats', async (req, res) => {
+app.get('/api/chats', authenticateToken, async (req, res) => {
     try {
-        const userId = req.user.id; // Assuming user ID is available in req.user
+        const userId = req.user.id;
         const result = await pool.query(`
             SELECT * FROM chats 
             WHERE user1_id = $1 OR user2_id = $1
         `, [userId]);
+
         res.json(result.rows);
     } catch (error) {
         console.error('Error fetching chats:', error);
@@ -1037,6 +1038,13 @@ app.post('/api/chats', authenticateToken, async (req, res) => {
         const { user2Id } = req.body;
         const user1Id = req.user.id;
 
+        // Fetch usernames
+        const user1Result = await pool.query('SELECT username FROM users WHERE id = $1', [user1Id]);
+        const user2Result = await pool.query('SELECT username FROM users WHERE id = $1', [user2Id]);
+
+        const user1Username = user1Result.rows[0].username;
+        const user2Username = user2Result.rows[0].username;
+
         // Check if chat already exists
         const existingChat = await pool.query(`
             SELECT id FROM chats 
@@ -1049,10 +1057,10 @@ app.post('/api/chats', authenticateToken, async (req, res) => {
 
         // Create new chat if it doesn't exist
         const result = await pool.query(`
-            INSERT INTO chats (user1_id, user2_id) 
-            VALUES ($1, $2) 
+            INSERT INTO chats (user1_id, user2_id, user1_username, user2_username) 
+            VALUES ($1, $2, $3, $4) 
             RETURNING id
-        `, [user1Id, user2Id]);
+        `, [user1Id, user2Id, user1Username, user2Username]);
         res.status(201).json({ chatId: result.rows[0].id });
     } catch (error) {
         console.error('Error starting chat:', error);

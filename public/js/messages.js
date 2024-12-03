@@ -18,13 +18,23 @@ async function loadChats() {
         });
         const chats = await response.json();
         if (!Array.isArray(chats)) throw new Error('Invalid response format');
+        
         const chatList = document.querySelector('.chat-list');
-        chatList.innerHTML = chats.map(chat => `
-            <div class="chat-card" onclick="openChat(${chat.id})">
-                <p>Chat with ${chat.user2_id}</p>
-                <span>Last message preview...</span>
-            </div>
-        `).join('');
+        chatList.innerHTML = '<h3>Messages Log</h3>';
+
+        const userId = parseInt(localStorage.getItem('userId'));
+
+        chats.forEach(chat => {
+            if (chat.messages && chat.messages.length > 0) {
+                const chatWith = chat.user1_id === userId ? chat.user1_username : chat.user2_username;
+                chatList.innerHTML += `
+                    <div class="chat-card" onclick="openChat(${chat.id})">
+                        <p>Chat with ${chatWith}</p>
+                        <span>Last message preview...</span>
+                    </div>
+                `;
+            }
+        });
     } catch (error) {
         console.error('Error loading chats:', error);
     }
