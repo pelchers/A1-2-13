@@ -19,6 +19,8 @@ function createNavbar() {
             <div id="settingsDropdown" class="dropdown-content">
                 <a href="/dashboard.html">Projects</a>
                 <a href="/profile.html">Update Profile</a>
+                <a href="/plans.html">Plans</a>
+                <a href="/manage-plan.html">Manage Plan</a>
                 <a href="#" id="logoutBtn">Logout</a>
             </div>
         </div>
