@@ -670,3 +670,7 @@ document.addEventListener('DOMContentLoaded', () => {
         settingsBtn.addEventListener('click', toggleSettings);
     }
 });
+
+function openMessageModal(userId) {
+    window.location.href = `/messages.html?userId=${userId}`;
+}
