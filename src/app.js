@@ -976,6 +976,105 @@ app.post('/api/projects/:projectId/watch', authenticateToken, async (req, res) =
     }
 });
 
+// Route to get chats for a user
+app.get('/api/chats', async (req, res) => {
+    try {
+        const userId = req.user.id; // Assuming user ID is available in req.user
+        const result = await pool.query(`
+            SELECT * FROM chats 
+            WHERE user1_id = $1 OR user2_id = $1
+        `, [userId]);
+        res.json(result.rows);
+    } catch (error) {
+        console.error('Error fetching chats:', error);
+        res.status(500).json({ message: 'Server error' });
+    }
+});
+
+// Route to get messages for a chat
+app.get('/api/chats/:chatId/messages', authenticateToken, async (req, res) => {
+    try {
+        const { chatId } = req.params;
+        const result = await pool.query(`
+            SELECT messages FROM chats
+            WHERE id = $1
+        `, [chatId]);
+
+        const messages = result.rows[0].messages || [];
+        res.json(messages);
+    } catch (error) {
+        console.error('Error fetching messages:', error);
+        res.status(500).json({ message: 'Server error' });
+    }
+});
+
+// Route to send a message
+app.post('/api/chats/:chatId/messages', authenticateToken, async (req, res) => {
+    try {
+        const { chatId } = req.params;
+        const { content } = req.body;
+        const senderId = req.user.id;
+        const timestamp = new Date().toISOString();
+
+        const newMessage = { sender_id: senderId, content, timestamp };
+
+        await pool.query(`
+            UPDATE chats
+            SET messages = messages || $1::jsonb
+            WHERE id = $2
+        `, [JSON.stringify(newMessage), chatId]);
+
+        res.status(201).json({ message: 'Message sent' });
+    } catch (error) {
+        console.error('Error sending message:', error);
+        res.status(500).json({ message: 'Server error' });
+    }
+});
+
+// Route to start a new chat or get existing chat
+app.post('/api/chats', authenticateToken, async (req, res) => {
+    try {
+        const { user2Id } = req.body;
+        const user1Id = req.user.id;
+
+        // Check if chat already exists
+        const existingChat = await pool.query(`
+            SELECT id FROM chats 
+            WHERE (user1_id = $1 AND user2_id = $2) OR (user1_id = $2 AND user2_id = $1)
+        `, [user1Id, user2Id]);
+
+        if (existingChat.rows.length > 0) {
+            return res.json({ chatId: existingChat.rows[0].id });
+        }
+
+        // Create new chat if it doesn't exist
+        const result = await pool.query(`
+            INSERT INTO chats (user1_id, user2_id) 
+            VALUES ($1, $2) 
+            RETURNING id
+        `, [user1Id, user2Id]);
+        res.status(201).json({ chatId: result.rows[0].id });
+    } catch (error) {
+        console.error('Error starting chat:', error);
+        res.status(500).json({ message: 'Server error' });
+    }
+});
+
+// Route to search users
+app.get('/api/users/search', authenticateToken, async (req, res) => {
+    try {
+        const { query } = req.query;
+        const result = await pool.query(`
+            SELECT id, username FROM users 
+            WHERE username ILIKE $1
+        `, [`%${query}%`]);
+        res.json(result.rows);
+    } catch (error) {
+        console.error('Error searching users:', error);
+        res.status(500).json({ message: 'Server error' });
+    }
+});
+
 app.listen(port, () => {
     console.log(`Server running on port ${port}`);
 }); 

@@ -656,3 +656,17 @@ window.handleUserWatch = async function(userId, event) {
         showMessage(error.message || 'Failed to update watch status', 'error');
     }
 }
+
+// Ensure this function is defined and working
+function toggleSettings() {
+    const settingsDropdown = document.getElementById('settingsDropdown');
+    settingsDropdown.classList.toggle('show');
+}
+
+// Add event listener for the settings button
+document.addEventListener('DOMContentLoaded', () => {
+    const settingsBtn = document.querySelector('.settings-btn');
+    if (settingsBtn) {
+        settingsBtn.addEventListener('click', toggleSettings);
+    }
+});

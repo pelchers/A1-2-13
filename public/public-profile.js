@@ -345,4 +345,50 @@ function viewProjects() {
     }
 }console.log('View projects function defined');
 
+/*
+Conditional Rendering Explanation:
+--------------------------------
+
+1. Profile Type Detection:
+   - The page checks userData.profile_type to determine if the user is a 'brand' or 'creator'
+   - This is done using ternary operators: ${userData.profile_type === 'brand' ? brandContent : creatorContent}
+
+2. Content Structure:
+   - Brand View:
+     * Brand Information (description, industry sectors)
+     * Target Audience
+     * Campaign Information (goals, budget)
+     * Deal Information (budget range, preferred creator types, collaboration requirements, campaign preferences)
+
+   - Creator View:
+     * Creator Details (specialties, platforms)
+     * Content Types
+     * Deal Information (rate range, preferred deal types, collaboration preferences)
+     * Portfolio & Links
+
+3. Data Handling:
+   - Arrays are handled with .map() for multiple items:
+     * ${Array.isArray(userData.someArray) ? userData.someArray.map(item => ...).join(', ') : 'Not specified'}
+   - Null/undefined values have fallbacks:
+     * ${userData.someField || 'Not specified'}
+   - Numeric ranges use template literals:
+     * ${userData.min || '0'} - ${userData.max || '∞'}
+
+4. Section Organization:
+   - Each major section is wrapped in <section class="profile-section">
+   - Subsections use appropriate semantic tags (h3, h4, div)
+   - Data is displayed in either:
+     * Tag containers for list-type data
+     * Info cards for key metrics and preferences
+     * Standard paragraphs for descriptions
+
+5. Dynamic Classes:
+   - Classes are conditionally added based on content type:
+     * ${className}
+   - This allows for specific styling per content type
+
+Note: The conditional rendering ensures that users see relevant information based on their profile type,
+while maintaining a consistent layout structure across both views.
+*/
+
 
