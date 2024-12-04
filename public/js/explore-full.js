@@ -344,9 +344,11 @@ async function loadUsers() {
                             `}
                             
                             <div class="card-actions">
-                                <button class="connect-button" onclick="followUser(${user.id}); event.stopPropagation();">
-                                    Connect
-                                </button>
+                                <a href="/messages.html?userId=${user.id}" 
+                                   class="show-profile-button" 
+                                   onclick="event.stopPropagation();">
+                                    Send Message
+                                </a>
                                 <a href="/public-profile.html?id=${user.id}" 
                                    class="show-profile-button" 
                                    onclick="event.stopPropagation();">
@@ -670,7 +672,3 @@ document.addEventListener('DOMContentLoaded', () => {
         settingsBtn.addEventListener('click', toggleSettings);
     }
 });
-
-function openMessageModal(userId) {
-    window.location.href = `/messages.html?userId=${userId}`;
-}

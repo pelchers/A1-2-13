@@ -1,12 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => {
-    const urlParams = new URLSearchParams(window.location.search);
-    const userId = urlParams.get('userId');
-
-    if (userId) {
-        openChatWithUser(userId);
-    } else {
-        loadChats();
-    }
+    loadChats();
 
     const searchInput = document.querySelector('.search-bar input');
     searchInput.addEventListener('input', filterChats);
