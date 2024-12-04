@@ -28,7 +28,7 @@ async function loadChats() {
             if (chat.messages && chat.messages.length > 0) {
                 const chatWith = chat.user1_id === userId ? chat.user1_username : chat.user2_username;
                 chatList.innerHTML += `
-                    <div class="chat-card" onclick="openChat(${chat.id})">
+                    <div class="chat-card" onclick="openChat(${chat.id})" data-chat-id="${chat.id}" data-chat-with="${chatWith}">
                         <p>Chat with ${chatWith}</p>
                         <span>Last message preview...</span>
                     </div>
@@ -83,6 +83,32 @@ async function openChatWithUser(userId) {
         });
         const data = await response.json();
         if (!data.chatId) throw new Error('Chat creation failed');
+
+        const chatList = document.querySelector('.chat-list');
+        const existingCard = document.querySelector(`.chat-card[data-chat-id="${data.chatId}"]`);
+
+        if (!existingCard) {
+            const userResponse = await fetch(`/api/users/${userId}/public`, {
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`
+                }
+            });
+
+            if (!userResponse.ok) {
+                throw new Error('User not found');
+            }
+
+            const userData = await userResponse.json();
+            const chatWith = userData.username;
+
+            chatList.innerHTML += `
+                <div class="chat-card" onclick="openChat(${data.chatId})" data-chat-id="${data.chatId}" data-chat-with="${chatWith}">
+                    <p>Chat with ${chatWith}</p>
+                    <span>Last message preview...</span>
+                </div>
+            `;
+        }
+
         openChat(data.chatId);
     } catch (error) {
         console.error('Error opening chat with user:', error);
@@ -98,7 +124,21 @@ async function openChat(chatId) {
         });
         const messages = await response.json();
         const chatWindow = document.querySelector('.chat-window');
+        const chatCard = document.querySelector(`.chat-card[data-chat-id="${chatId}"]`);
+
+        if (!chatCard) {
+            console.error('Chat card not found');
+            return;
+        }
+
+        const chatWith = chatCard.dataset.chatWith;
+
+        // Highlight the active chat card
+        document.querySelectorAll('.chat-card').forEach(card => card.classList.remove('active'));
+        chatCard.classList.add('active');
+
         chatWindow.innerHTML = `
+            <div class="chat-header">${chatWith}</div>
             <div class="messages">
                 ${messages.length > 0 ? messages.map(message => `
                     <div class="message">

@@ -3624,3 +3624,30 @@ main {
 .message-input button:hover {
     background-color: #0056b3;
 }
+
+/* Chat Window Styles */
+.chat-window {
+    position: relative;
+    padding: 10px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.chat-header {
+    position: absolute;
+    top: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #007bff;
+    color: white;
+    padding: 5px 15px;
+    border-radius: 20px;
+    font-weight: bold;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.chat-card.active {
+    background-color: #e0f7fa;
+    border-left: 4px solid #007bff;
+}
