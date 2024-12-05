@@ -1083,6 +1083,74 @@ app.get('/api/users/search', authenticateToken, async (req, res) => {
     }
 });
 
+app.put('/api/profile', authenticateToken, async (req, res) => {
+    try {
+        const {
+            display_name,
+            bio,
+            profile_type,
+            creator_specialties,
+            creator_platforms,
+            audience_size,
+            content_categories,
+            portfolio_links,
+            brand_description,
+            industry_sectors,
+            campaign_goals,
+            target_audience,
+            creator_rate_min,
+            creator_rate_max,
+            preferred_deal_types
+        } = req.body;
+
+        const query = `
+            UPDATE users 
+            SET display_name = $1,
+                bio = $2,
+                profile_type = $3,
+                creator_specialties = $4,
+                creator_platforms = $5,
+                audience_size = $6,
+                content_categories = $7,
+                portfolio_links = $8,
+                brand_description = $9,
+                industry_sectors = $10,
+                campaign_goals = $11,
+                target_audience = $12,
+                creator_rate_min = $13,
+                creator_rate_max = $14,
+                preferred_deal_types = $15
+            WHERE id = $16
+            RETURNING *
+        `;
+
+        const values = [
+            display_name,
+            bio,
+            profile_type,
+            creator_specialties,
+            creator_platforms,
+            audience_size,
+            content_categories,
+            portfolio_links || [],
+            brand_description,
+            industry_sectors,
+            campaign_goals,
+            target_audience,
+            creator_rate_min,
+            creator_rate_max,
+            preferred_deal_types,
+            req.user.id
+        ];
+
+        const result = await pool.query(query, values);
+        res.json(result.rows[0]);
+    } catch (error) {
+        console.error('Profile update error:', error);
+        res.status(500).json({ message: 'Error updating profile' });
+    }
+});
+
 app.listen(port, () => {
     console.log(`Server running on port ${port}`);
 }); 

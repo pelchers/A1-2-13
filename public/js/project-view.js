@@ -35,6 +35,9 @@ async function loadProjectDetails(projectId, currentUserId) {
         });
 
         if (!response.ok) {
+            if (response.status === 404) {
+                throw new Error('Project not found');
+            }
             throw new Error('Failed to fetch project details');
         }
 
@@ -49,6 +52,11 @@ async function loadProjectDetails(projectId, currentUserId) {
         }
     } catch (error) {
         console.error('Error loading project details:', error);
+        document.getElementById('projectDetails').innerHTML = `
+            <div class="error-message">
+                ${error.message || 'Error loading project details'}
+            </div>
+        `;
     }
 }
 
