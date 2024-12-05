@@ -310,3 +310,9 @@ function showMessage(message, type = 'info') {
         messageDiv.remove();
     }, 3000);
 }
+
+// Update any profile data handling
+function updateProfileSection(userData) {
+    // Change target_audience to target_demographics
+    const demographics = userData.target_demographics || [];
+}

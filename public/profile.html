@@ -37,28 +37,54 @@
             <!-- Creator Fields -->
             <div id="creatorFields" class="form-section">
                 <h3>Creator Details</h3>
+                
                 <div class="form-group">
-                    <label for="creator_specialties">Specialties</label>
-                    <select id="creator_specialties" name="creator_specialties" multiple>
-                        <!-- Options will be populated via JavaScript -->
-                    </select>
+                    <label>Specialties</label>
+                    <div class="button-select" id="creator_specialties_container">
+                        <button type="button" data-value="Video Production" class="select-button">Video Production</button>
+                        <button type="button" data-value="Photography" class="select-button">Photography</button>
+                        <button type="button" data-value="Writing" class="select-button">Writing</button>
+                        <button type="button" data-value="Music" class="select-button">Music</button>
+                        <button type="button" data-value="Animation" class="select-button">Animation</button>
+                        <button type="button" data-value="Graphic Design" class="select-button">Graphic Design</button>
+                        <button type="button" data-value="Social Media" class="select-button">Social Media</button>
+                        <button type="button" data-value="Podcasting" class="select-button">Podcasting</button>
+                    </div>
                 </div>
+
                 <div class="form-group">
-                    <label for="creator_platforms">Platforms</label>
-                    <select id="creator_platforms" name="creator_platforms" multiple>
-                        <!-- Options will be populated via JavaScript -->
-                    </select>
+                    <label>Platforms</label>
+                    <div class="button-select" id="creator_platforms_container">
+                        <button type="button" data-value="YouTube" class="select-button">YouTube</button>
+                        <button type="button" data-value="Instagram" class="select-button">Instagram</button>
+                        <button type="button" data-value="TikTok" class="select-button">TikTok</button>
+                        <button type="button" data-value="Twitter" class="select-button">Twitter</button>
+                        <button type="button" data-value="LinkedIn" class="select-button">LinkedIn</button>
+                        <button type="button" data-value="Facebook" class="select-button">Facebook</button>
+                        <button type="button" data-value="Twitch" class="select-button">Twitch</button>
+                        <button type="button" data-value="Blog" class="select-button">Blog</button>
+                    </div>
                 </div>
+
+                <div class="form-group">
+                    <label>Content Categories</label>
+                    <div class="button-select" id="content_categories_container">
+                        <button type="button" data-value="Entertainment" class="select-button">Entertainment</button>
+                        <button type="button" data-value="Education" class="select-button">Education</button>
+                        <button type="button" data-value="Lifestyle" class="select-button">Lifestyle</button>
+                        <button type="button" data-value="Gaming" class="select-button">Gaming</button>
+                        <button type="button" data-value="Tech" class="select-button">Tech</button>
+                        <button type="button" data-value="Fashion" class="select-button">Fashion</button>
+                        <button type="button" data-value="Food" class="select-button">Food</button>
+                        <button type="button" data-value="Travel" class="select-button">Travel</button>
+                    </div>
+                </div>
+
                 <div class="form-group">
                     <label for="audience_size">Audience Size</label>
                     <input type="number" id="audience_size" name="audience_size">
                 </div>
-                <div class="form-group">
-                    <label for="content_categories">Content Categories</label>
-                    <select id="content_categories" name="content_categories" multiple>
-                        <!-- Options will be populated via JavaScript -->
-                    </select>
-                </div>
+
                 <div class="form-group">
                     <label>Rate Range</label>
                     <div class="rate-range">
@@ -67,11 +93,17 @@
                         <input type="number" id="creator_rate_max" name="creator_rate_max" placeholder="Max">
                     </div>
                 </div>
+
                 <div class="form-group">
-                    <label for="preferred_deal_types">Preferred Deal Types</label>
-                    <select id="preferred_deal_types" name="preferred_deal_types" multiple>
-                        <!-- Options will be populated via JavaScript -->
-                    </select>
+                    <label>Preferred Deal Types</label>
+                    <div class="button-select" id="preferred_deal_types_container">
+                        <button type="button" data-value="Sponsored Posts" class="select-button">Sponsored Posts</button>
+                        <button type="button" data-value="Brand Ambassadorship" class="select-button">Brand Ambassadorship</button>
+                        <button type="button" data-value="Product Reviews" class="select-button">Product Reviews</button>
+                        <button type="button" data-value="Content Creation" class="select-button">Content Creation</button>
+                        <button type="button" data-value="Affiliate Marketing" class="select-button">Affiliate Marketing</button>
+                        <button type="button" data-value="Event Coverage" class="select-button">Event Coverage</button>
+                    </div>
                 </div>
             </div>
 
@@ -82,23 +114,44 @@
                     <label for="brand_description">Brand Description</label>
                     <textarea id="brand_description" name="brand_description"></textarea>
                 </div>
+
                 <div class="form-group">
-                    <label for="industry_sectors">Industry Sectors</label>
-                    <select id="industry_sectors" name="industry_sectors" multiple>
-                        <!-- Options will be populated via JavaScript -->
-                    </select>
+                    <label>Industry Sectors</label>
+                    <div class="button-select" id="industry_sectors_container">
+                        <button type="button" data-value="Technology" class="select-button">Technology</button>
+                        <button type="button" data-value="Fashion" class="select-button">Fashion</button>
+                        <button type="button" data-value="Food & Beverage" class="select-button">Food & Beverage</button>
+                        <button type="button" data-value="Travel" class="select-button">Travel</button>
+                        <button type="button" data-value="Health & Wellness" class="select-button">Health & Wellness</button>
+                        <button type="button" data-value="Beauty" class="select-button">Beauty</button>
+                        <button type="button" data-value="Gaming" class="select-button">Gaming</button>
+                        <button type="button" data-value="Education" class="select-button">Education</button>
+                    </div>
                 </div>
+
                 <div class="form-group">
-                    <label for="campaign_goals">Campaign Goals</label>
-                    <select id="campaign_goals" name="campaign_goals" multiple>
-                        <!-- Options will be populated via JavaScript -->
-                    </select>
+                    <label>Campaign Goals</label>
+                    <div class="button-select" id="campaign_goals_container">
+                        <button type="button" data-value="Brand Awareness" class="select-button">Brand Awareness</button>
+                        <button type="button" data-value="Product Launch" class="select-button">Product Launch</button>
+                        <button type="button" data-value="Lead Generation" class="select-button">Lead Generation</button>
+                        <button type="button" data-value="Sales Conversion" class="select-button">Sales Conversion</button>
+                        <button type="button" data-value="Community Building" class="select-button">Community Building</button>
+                        <button type="button" data-value="Event Promotion" class="select-button">Event Promotion</button>
+                    </div>
                 </div>
+
                 <div class="form-group">
-                    <label for="target_audience">Target Audience</label>
-                    <select id="target_audience" name="target_audience" multiple>
-                        <!-- Options will be populated via JavaScript -->
-                    </select>
+                    <label>Target Audience</label>
+                    <div class="button-select" id="target_demographics_container">
+                        <button type="button" data-value="Gen Z" class="select-button">Gen Z</button>
+                        <button type="button" data-value="Millennials" class="select-button">Millennials</button>
+                        <button type="button" data-value="Parents" class="select-button">Parents</button>
+                        <button type="button" data-value="Professionals" class="select-button">Professionals</button>
+                        <button type="button" data-value="Students" class="select-button">Students</button>
+                        <button type="button" data-value="Tech Enthusiasts" class="select-button">Tech Enthusiasts</button>
+                        <button type="button" data-value="Fashion Enthusiasts" class="select-button">Fashion Enthusiasts</button>
+                    </div>
                 </div>
             </div>
 

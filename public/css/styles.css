@@ -3651,3 +3651,37 @@ main {
     background-color: #e0f7fa;
     border-left: 4px solid #007bff;
 }
+
+/* Button Select Styles */
+.button-select {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin: 10px 0;
+}
+
+.select-button {
+    padding: 8px 16px;
+    border: 2px solid #ddd;
+    border-radius: 20px;
+    background: white;
+    color: #333;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.select-button:hover {
+    background: #f0f0f0;
+    border-color: #bbb;
+}
+
+.select-button.selected {
+    background: #007bff;
+    color: white;
+    border-color: #0056b3;
+}
+
+.select-button:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(0,123,255,0.25);
+}

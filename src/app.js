@@ -184,7 +184,7 @@ app.get('/api/users', authenticateToken, async (req, res) => {
                 u.follower_count,
                 u.brand_description,
                 u.industry_sectors,
-                u.target_audience,
+                u.target_demographics,
                 u.campaign_goals,
                 u.target_market_tags,
                 u.target_demographics,
@@ -330,7 +330,7 @@ app.get('/api/profile', authenticateToken, async (req, res) => {
                 collaboration_preferences,
                 brand_description,
                 industry_sectors,
-                target_audience,
+                target_demographics,
                 campaign_preferences,
                 budget_range,
                 preferred_creator_types,
@@ -528,7 +528,10 @@ app.get('/api/users/:userId/public', async (req, res) => {
                 brand_description,
                 industry_sectors,
                 campaign_goals,
-                target_audience
+                target_demographics,
+                creator_rate_min,
+                creator_rate_max,
+                preferred_deal_types
             FROM users 
             WHERE id = $1`;
             
@@ -656,7 +659,7 @@ app.get('/api/projects/:projectId', authenticateToken, async (req, res) => {
             WHERE p.id = $1
             GROUP BY p.id, u.username, u.profile_type, p.name, p.description, 
                      p.project_type, p.status, p.created_at, p.budget_range,
-                     p.timeline, p.payment_format, p.target_audience,
+                     p.timeline, p.payment_format, p.target_demographics,
                      p.campaign_goals, p.content_category, p.content_length,
                      p.technical_requirements, p.user_id, p.watcher_ids
         `;
@@ -1094,6 +1097,7 @@ app.get('/api/users/search', authenticateToken, async (req, res) => {
     }
 });
 
+// Update the profile PUT endpoint
 app.put('/api/profile', authenticateToken, async (req, res) => {
     try {
         const {
@@ -1108,11 +1112,14 @@ app.put('/api/profile', authenticateToken, async (req, res) => {
             brand_description,
             industry_sectors,
             campaign_goals,
-            target_audience,
+            target_demographics,
             creator_rate_min,
             creator_rate_max,
             preferred_deal_types
         } = req.body;
+
+        // Ensure arrays are properly handled
+        const normalizeArray = (arr) => Array.isArray(arr) ? arr : [];
 
         const query = `
             UPDATE users 
@@ -1127,7 +1134,7 @@ app.put('/api/profile', authenticateToken, async (req, res) => {
                 brand_description = $9,
                 industry_sectors = $10,
                 campaign_goals = $11,
-                target_audience = $12,
+                target_demographics = $12,
                 creator_rate_min = $13,
                 creator_rate_max = $14,
                 preferred_deal_types = $15
@@ -1139,18 +1146,18 @@ app.put('/api/profile', authenticateToken, async (req, res) => {
             display_name,
             bio,
             profile_type,
-            creator_specialties,
-            creator_platforms,
+            normalizeArray(creator_specialties),
+            normalizeArray(creator_platforms),
             audience_size,
-            content_categories,
-            portfolio_links || [],
+            normalizeArray(content_categories),
+            normalizeArray(portfolio_links),
             brand_description,
-            industry_sectors,
-            campaign_goals,
-            target_audience,
+            normalizeArray(industry_sectors),
+            normalizeArray(campaign_goals),
+            normalizeArray(target_demographics),
             creator_rate_min,
             creator_rate_max,
-            preferred_deal_types,
+            normalizeArray(preferred_deal_types),
             req.user.id
         ];
 

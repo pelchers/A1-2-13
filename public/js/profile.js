@@ -2,6 +2,7 @@ document.addEventListener('DOMContentLoaded', () => {
     initializeForm();
     loadProfileData();
     setupProfileTypeToggle();
+    initializeButtonSelects();
 });
 
 // Form initialization
@@ -32,7 +33,7 @@ function initializeForm() {
             'Brand Awareness', 'Product Launch', 'Lead Generation',
             'Sales Conversion', 'Community Building', 'Event Promotion'
         ],
-        target_audience: [
+        target_demographics: [
             'Gen Z', 'Millennials', 'Parents', 'Professionals',
             'Students', 'Tech Enthusiasts', 'Fashion Enthusiasts'
         ]
@@ -63,22 +64,23 @@ async function loadProfileData() {
         });
         const profile = await response.json();
         
-        // Populate form fields with existing data
+        // Set regular form fields
         Object.entries(profile).forEach(([key, value]) => {
             const element = document.getElementById(key);
-            if (element) {
-                if (element.type === 'select-multiple' && Array.isArray(value)) {
-                    // Handle multiple select
-                    Array.from(element.options).forEach(option => {
-                        option.selected = value.includes(option.value);
-                    });
-                } else {
-                    element.value = value;
-                }
+            if (element && !element.classList.contains('button-select')) {
+                element.value = value;
             }
         });
 
-        // Show/hide appropriate fields based on profile type
+        // Set button selections
+        setSelectedButtons('creator_specialties_container', profile.creator_specialties);
+        setSelectedButtons('creator_platforms_container', profile.creator_platforms);
+        setSelectedButtons('content_categories_container', profile.content_categories);
+        setSelectedButtons('preferred_deal_types_container', profile.preferred_deal_types);
+        setSelectedButtons('industry_sectors_container', profile.industry_sectors);
+        setSelectedButtons('campaign_goals_container', profile.campaign_goals);
+        setSelectedButtons('target_demographics_container', profile.target_demographics);
+
         toggleProfileFields(profile.profile_type);
     } catch (error) {
         console.error('Error loading profile:', error);
@@ -96,18 +98,17 @@ async function handleSubmit(event) {
             display_name: formData.get('display_name'),
             bio: formData.get('bio'),
             profile_type: formData.get('profile_type'),
-            // Get array values from multiple selects
-            creator_specialties: Array.from(document.getElementById('creator_specialties').selectedOptions).map(opt => opt.value),
-            creator_platforms: Array.from(document.getElementById('creator_platforms').selectedOptions).map(opt => opt.value),
+            creator_specialties: getSelectedValues('creator_specialties_container'),
+            creator_platforms: getSelectedValues('creator_platforms_container'),
             audience_size: parseInt(formData.get('audience_size')),
-            content_categories: Array.from(document.getElementById('content_categories').selectedOptions).map(opt => opt.value),
+            content_categories: getSelectedValues('content_categories_container'),
             creator_rate_min: parseFloat(formData.get('creator_rate_min')),
             creator_rate_max: parseFloat(formData.get('creator_rate_max')),
-            preferred_deal_types: Array.from(document.getElementById('preferred_deal_types').selectedOptions).map(opt => opt.value),
+            preferred_deal_types: getSelectedValues('preferred_deal_types_container'),
             brand_description: formData.get('brand_description'),
-            industry_sectors: Array.from(document.getElementById('industry_sectors').selectedOptions).map(opt => opt.value),
-            campaign_goals: Array.from(document.getElementById('campaign_goals').selectedOptions).map(opt => opt.value),
-            target_audience: Array.from(document.getElementById('target_audience').selectedOptions).map(opt => opt.value)
+            industry_sectors: getSelectedValues('industry_sectors_container'),
+            campaign_goals: getSelectedValues('campaign_goals_container'),
+            target_demographics: getSelectedValues('target_demographics_container')
         };
 
         const response = await fetch('/api/profile', {
@@ -158,4 +159,74 @@ function showMessage(message, type = 'info') {
     container.innerHTML = '';
     container.appendChild(messageDiv);
     setTimeout(() => messageDiv.remove(), 3000);
+}
+
+// Add this after your existing initialization code
+function initializeButtonSelects() {
+    document.querySelectorAll('.button-select').forEach(container => {
+        container.querySelectorAll('.select-button').forEach(button => {
+            button.addEventListener('click', () => {
+                button.classList.toggle('selected');
+            });
+        });
+    });
+}
+
+// Update the form submission to collect selected buttons
+function getSelectedValues(containerId) {
+    const container = document.getElementById(containerId);
+    return Array.from(container.querySelectorAll('.select-button.selected'))
+                .map(button => button.dataset.value);
+}
+
+// Update handleSubmit function
+async function handleSubmit(event) {
+    event.preventDefault();
+    
+    try {
+        const formData = new FormData(event.target);
+        const profileData = {
+            display_name: formData.get('display_name'),
+            bio: formData.get('bio'),
+            profile_type: formData.get('profile_type'),
+            creator_specialties: getSelectedValues('creator_specialties_container'),
+            creator_platforms: getSelectedValues('creator_platforms_container'),
+            audience_size: parseInt(formData.get('audience_size')),
+            content_categories: getSelectedValues('content_categories_container'),
+            creator_rate_min: parseFloat(formData.get('creator_rate_min')),
+            creator_rate_max: parseFloat(formData.get('creator_rate_max')),
+            preferred_deal_types: getSelectedValues('preferred_deal_types_container'),
+            brand_description: formData.get('brand_description'),
+            industry_sectors: getSelectedValues('industry_sectors_container'),
+            campaign_goals: getSelectedValues('campaign_goals_container'),
+            target_demographics: getSelectedValues('target_demographics_container')
+        };
+
+        const response = await fetch('/api/profile', {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${localStorage.getItem('token')}`
+            },
+            body: JSON.stringify(profileData)
+        });
+
+        if (!response.ok) throw new Error('Failed to update profile');
+        
+        showMessage('Profile updated successfully', 'success');
+    } catch (error) {
+        console.error('Error updating profile:', error);
+        showMessage('Error updating profile', 'error');
+    }
+}
+
+// Update loadProfileData to set selected buttons
+function setSelectedButtons(containerId, values) {
+    if (!values) return;
+    const container = document.getElementById(containerId);
+    container.querySelectorAll('.select-button').forEach(button => {
+        if (values.includes(button.dataset.value)) {
+            button.classList.add('selected');
+        }
+    });
 } 
