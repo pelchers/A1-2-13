@@ -36,12 +36,19 @@ async function loadProjectDetails(projectId, currentUserId) {
 
         if (!response.ok) {
             if (response.status === 404) {
-                throw new Error('Project not found');
+                document.getElementById('projectDetails').innerHTML = `
+                    <div class="error-message">Project not found</div>
+                `;
+                return;
             }
             throw new Error('Failed to fetch project details');
         }
 
         const project = await response.json();
+        
+        // Debug log to see what data we're getting
+        console.log('Project data:', project);
+
         renderProjectDetails(project);
 
         // Show the edit button if the user is the creator
