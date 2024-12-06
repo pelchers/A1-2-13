@@ -554,64 +554,41 @@ app.get('/api/users/:userId/public', async (req, res) => {
 // Project Management Endpoints
 app.post('/api/projects', authenticateToken, async (req, res) => {
     try {
-        console.log('Received project data:', req.body); // Debug log
-
-        // Validate required fields
-        if (!req.body.name || !req.body.description || !req.body.project_type) {
-            return res.status(400).json({
-                message: 'Missing required fields',
-                required: ['name', 'description', 'project_type']
-            });
-        }
-
-        // Check if projects table exists
-        const checkTable = await pool.query(`
-            SELECT EXISTS (
-                SELECT FROM information_schema.tables 
-                WHERE table_name = 'projects'
-            );
-        `);
-
-        console.log('Table check result:', checkTable.rows[0]); // Debug log
+        const {
+            name, description, project_type, status, visibility,
+            timeline, start_date, end_date, budget_range,
+            payment_terms, payment_format, target_audience,
+            campaign_goals, content_category, content_length,
+            technical_requirements, equipment_needed
+        } = req.body;
 
         const query = `
             INSERT INTO projects (
-                user_id,
-                name,
-                description,
-                project_type,
-                created_at,
-                updated_at
-            ) VALUES ($1, $2, $3, $4, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
-            RETURNING *
+                name, description, user_id, project_type, status,
+                visibility, timeline, start_date, end_date,
+                budget_range, payment_terms, payment_format,
+                target_audience, campaign_goals, content_category,
+                content_length, technical_requirements, equipment_needed,
+                created_at, updated_at
+            ) VALUES (
+                $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12,
+                $13, $14, $15, $16, $17, $18, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
+            ) RETURNING *
         `;
 
         const values = [
-            req.user.id,
-            req.body.name,
-            req.body.description,
-            req.body.project_type
+            name, description, req.user.id, project_type, status,
+            visibility, timeline, start_date, end_date,
+            budget_range, payment_terms, payment_format,
+            target_audience, campaign_goals, content_category,
+            content_length, technical_requirements, equipment_needed
         ];
 
-        console.log('Executing query with values:', values); // Debug log
-
         const result = await pool.query(query, values);
-        console.log('Query result:', result.rows[0]); // Debug log
-        
         res.status(201).json(result.rows[0]);
     } catch (error) {
-        console.error('Detailed error:', {
-            message: error.message,
-            stack: error.stack,
-            code: error.code,
-            detail: error.detail
-        });
-        
-        res.status(500).json({ 
-            message: 'Error creating project',
-            error: error.message,
-            detail: error.detail
-        });
+        console.error('Error creating project:', error);
+        res.status(500).json({ message: 'Error creating project' });
     }
 });
 
@@ -619,17 +596,10 @@ app.post('/api/projects', authenticateToken, async (req, res) => {
 app.get('/api/projects', authenticateToken, async (req, res) => {
     try {
         const query = `
-            SELECT p.*, 
-                COUNT(DISTINCT pc.user_id) as collaborator_count,
-                json_agg(DISTINCT pt.tag) as tags
-            FROM projects p
-            LEFT JOIN project_collaborators pc ON p.id = pc.project_id
-            LEFT JOIN project_tags pt ON p.id = pt.project_id
-            WHERE p.user_id = $1
-            GROUP BY p.id
-            ORDER BY p.created_at DESC
+            SELECT * FROM projects 
+            WHERE user_id = $1 
+            ORDER BY created_at DESC
         `;
-        
         const result = await pool.query(query, [req.user.id]);
         res.json(result.rows);
     } catch (error) {
@@ -638,12 +608,9 @@ app.get('/api/projects', authenticateToken, async (req, res) => {
     }
 });
 
-// Get single project endpoint - remove authenticateToken middleware
+// Get single project - public view
 app.get('/api/projects/:id', async (req, res) => {
     try {
-        const projectId = req.params.id;
-        console.log('Fetching project:', projectId);
-        
         const query = `
             SELECT p.*, 
                 u.username as creator_name,
@@ -653,8 +620,7 @@ app.get('/api/projects/:id', async (req, res) => {
             WHERE p.id = $1
         `;
         
-        const result = await pool.query(query, [projectId]);
-        console.log('Query result:', result.rows);
+        const result = await pool.query(query, [req.params.id]);
         
         if (result.rows.length === 0) {
             return res.status(404).json({ message: 'Project not found' });
@@ -671,7 +637,9 @@ app.get('/api/projects/:id', async (req, res) => {
 app.put('/api/projects/:id', authenticateToken, async (req, res) => {
     try {
         // First check if user owns the project
-        const checkQuery = 'SELECT user_id FROM projects WHERE id = $1';
+        const checkQuery = `
+            SELECT user_id FROM projects WHERE id = $1
+        `;
         const checkResult = await pool.query(checkQuery, [req.params.id]);
         
         if (checkResult.rows.length === 0) {
@@ -682,24 +650,48 @@ app.put('/api/projects/:id', authenticateToken, async (req, res) => {
             return res.status(403).json({ message: 'Not authorized to update this project' });
         }
 
-        const updateQuery = `
-            UPDATE projects
-            SET 
-                name = COALESCE($1, name),
-                description = COALESCE($2, description),
-                /* Add other fields */
+        const {
+            name, description, project_type, status, visibility,
+            timeline, start_date, end_date, budget_range,
+            payment_terms, payment_format, target_audience,
+            campaign_goals, content_category, content_length,
+            technical_requirements, equipment_needed
+        } = req.body;
+
+        const query = `
+            UPDATE projects 
+            SET name = $1,
+                description = $2,
+                project_type = $3,
+                status = $4,
+                visibility = $5,
+                timeline = $6,
+                start_date = $7,
+                end_date = $8,
+                budget_range = $9,
+                payment_terms = $10,
+                payment_format = $11,
+                target_audience = $12,
+                campaign_goals = $13,
+                content_category = $14,
+                content_length = $15,
+                technical_requirements = $16,
+                equipment_needed = $17,
                 updated_at = CURRENT_TIMESTAMP
-            WHERE id = $3
+            WHERE id = $18 AND user_id = $19
             RETURNING *
         `;
 
-        const result = await pool.query(updateQuery, [
-            req.body.name,
-            req.body.description,
-            // Add other fields
-            req.params.id
-        ]);
+        const values = [
+            name, description, project_type, status, visibility,
+            timeline, start_date, end_date, budget_range,
+            payment_terms, payment_format, target_audience,
+            campaign_goals, content_category, content_length,
+            technical_requirements, equipment_needed,
+            req.params.id, req.user.id
+        ];
 
+        const result = await pool.query(query, values);
         res.json(result.rows[0]);
     } catch (error) {
         console.error('Error updating project:', error);
@@ -711,7 +703,9 @@ app.put('/api/projects/:id', authenticateToken, async (req, res) => {
 app.delete('/api/projects/:id', authenticateToken, async (req, res) => {
     try {
         // First check if user owns the project
-        const checkQuery = 'SELECT user_id FROM projects WHERE id = $1';
+        const checkQuery = `
+            SELECT user_id FROM projects WHERE id = $1
+        `;
         const checkResult = await pool.query(checkQuery, [req.params.id]);
         
         if (checkResult.rows.length === 0) {
@@ -722,19 +716,15 @@ app.delete('/api/projects/:id', authenticateToken, async (req, res) => {
             return res.status(403).json({ message: 'Not authorized to delete this project' });
         }
 
-        // Delete project and all related data
-        await pool.query('BEGIN');
+        const query = `
+            DELETE FROM projects 
+            WHERE id = $1 AND user_id = $2
+            RETURNING id
+        `;
         
-        await pool.query('DELETE FROM project_tags WHERE project_id = $1', [req.params.id]);
-        await pool.query('DELETE FROM project_collaborators WHERE project_id = $1', [req.params.id]);
-        await pool.query('DELETE FROM project_milestones WHERE project_id = $1', [req.params.id]);
-        await pool.query('DELETE FROM projects WHERE id = $1', [req.params.id]);
-        
-        await pool.query('COMMIT');
-        
+        await pool.query(query, [req.params.id, req.user.id]);
         res.json({ message: 'Project deleted successfully' });
     } catch (error) {
-        await pool.query('ROLLBACK');
         console.error('Error deleting project:', error);
         res.status(500).json({ message: 'Error deleting project' });
     }

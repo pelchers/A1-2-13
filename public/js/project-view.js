@@ -63,43 +63,105 @@ function renderProjectDetails(project) {
     if (!container) return;
 
     container.innerHTML = `
-        <div>
-            <h1>${project.name}</h1>
-            <p>${project.description || 'No description available'}</p>
-            <div class="project-meta">
-                <span class="project-type-badge ${project.project_type}">
-                    ${project.project_type === 'brand_deal' ? '🤝 Brand Deal' : '🎨 Creative Work'}
-                </span>
-                <span class="project-status">Status: ${project.status}</span>
-                <span class="project-date">Created: ${formatDate(project.created_at)}</span>
+        <div class="project-view-container">
+            <div class="project-header">
+                <h1>${project.name}</h1>
+                <div class="project-meta">
+                    <div class="meta-item">
+                        <span class="meta-label">Type:</span>
+                        <span class="project-type-badge ${project.project_type}">
+                            ${project.project_type === 'brand_deal' ? '🤝 Brand Deal' : '🎨 Creative Work'}
+                        </span>
+                    </div>
+                    <div class="meta-item">
+                        <span class="meta-label">Status:</span>
+                        <span class="status-badge ${project.status}">${project.status}</span>
+                    </div>
+                    <div class="meta-item">
+                        <span class="meta-label">Visibility:</span>
+                        <span class="visibility-badge">${project.visibility}</span>
+                    </div>
+                    <div class="meta-item">
+                        <span class="meta-label">Created:</span>
+                        <span class="date-badge">${formatDate(project.created_at)}</span>
+                    </div>
+                </div>
             </div>
-            ${project.project_type === 'brand_deal' ? renderBrandDealDetails(project) : renderCreativeWorkDetails(project)}
+
+            <div class="project-content">
+                <section class="project-description">
+                    <h3>Description</h3>
+                    <p>${project.description || 'No description available'}</p>
+                </section>
+
+                <section class="project-timeline">
+                    <h3>Timeline</h3>
+                    <div class="timeline-details">
+                        <p><strong>Timeline:</strong> ${project.timeline || 'Not specified'}</p>
+                        <p><strong>Start Date:</strong> ${project.start_date ? new Date(project.start_date).toLocaleDateString() : 'Not set'}</p>
+                        <p><strong>End Date:</strong> ${project.end_date ? new Date(project.end_date).toLocaleDateString() : 'Not set'}</p>
+                    </div>
+                </section>
+
+                ${project.project_type === 'brand_deal' ? renderBrandDealDetails(project) : renderCreativeWorkDetails(project)}
+            </div>
         </div>
     `;
 }
 
 function renderBrandDealDetails(project) {
     return `
-        <div class="deal-details">
-            <h3>Deal Information</h3>
-            <p><strong>Budget Range:</strong> ${project.budget_range || 'Not specified'}</p>
-            <p><strong>Timeline:</strong> ${project.timeline || 'Not specified'}</p>
-            <p><strong>Payment Format:</strong> ${project.payment_format || 'Not specified'}</p>
-            <p><strong>Target Audience:</strong> ${project.target_audience || 'Not specified'}</p>
-            <p><strong>Campaign Goals:</strong> ${project.campaign_goals || 'Not specified'}</p>
-        </div>
+        <section class="brand-deal-details">
+            <h3>Brand Deal Information</h3>
+            
+            <div class="deal-financials">
+                <h4>Financial Details</h4>
+                <p><strong>Budget Range:</strong> ${project.budget_range || 'Not specified'}</p>
+                <p><strong>Payment Format:</strong> ${project.payment_format || 'Not specified'}</p>
+                <p><strong>Payment Terms:</strong> ${project.payment_terms || 'Not specified'}</p>
+            </div>
+
+            <div class="campaign-details">
+                <h4>Campaign Information</h4>
+                <div class="target-audience">
+                    <strong>Target Audience:</strong>
+                    ${renderArrayAsTags(project.target_audience)}
+                </div>
+                <div class="campaign-goals">
+                    <strong>Campaign Goals:</strong>
+                    ${renderArrayAsTags(project.campaign_goals)}
+                </div>
+            </div>
+        </section>
     `;
 }
 
 function renderCreativeWorkDetails(project) {
     return `
-        <div class="content-details">
+        <section class="creative-work-details">
             <h3>Content Information</h3>
-            <p><strong>Content Type:</strong> ${project.content_category || 'Not specified'}</p>
-            <p><strong>Content Length:</strong> ${project.content_length || 'Not specified'}</p>
-            <p><strong>Technical Requirements:</strong> ${project.technical_requirements || 'Not specified'}</p>
-        </div>
+            
+            <div class="content-specs">
+                <p><strong>Content Category:</strong> ${project.content_category || 'Not specified'}</p>
+                <p><strong>Content Length:</strong> ${project.content_length || 'Not specified'}</p>
+            </div>
+
+            <div class="technical-details">
+                <h4>Technical Requirements</h4>
+                <p>${project.technical_requirements || 'No technical requirements specified'}</p>
+            </div>
+
+            <div class="equipment">
+                <h4>Required Equipment</h4>
+                ${renderArrayAsTags(project.equipment_needed)}
+            </div>
+        </section>
     `;
+}
+
+function renderArrayAsTags(array) {
+    if (!array || array.length === 0) return '<span class="empty-tag">None specified</span>';
+    return array.map(item => `<span class="tag">${item}</span>`).join('');
 }
 
 function formatDate(dateString) {

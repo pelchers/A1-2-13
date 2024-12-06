@@ -7,23 +7,144 @@
     <link rel="stylesheet" href="/css/styles.css">
 </head>
 <body>
-    <!-- Navbar will be inserted by navbar.js -->
-
+    <div id="message-container"></div>
     <main class="projects-page">
         <div class="projects-container">
+            <!-- Projects List Section -->
             <div class="projects-list-section">
                 <div class="projects-header">
                     <h2>Your Projects</h2>
-                    <button onclick="createNewProject()" class="new-project-btn">+ New Project</button>
+                    <button onclick="showProjectForm()" class="new-project-btn">+ New Project</button>
                 </div>
                 <div id="projectsList" class="projects-list">
                     <!-- Projects will be loaded here -->
                 </div>
             </div>
-            <div class="project-form-section">
-                <div id="projectForm" class="project-form">
-                    <!-- Project form will be loaded here -->
-                </div>
+
+            <!-- Project Form Section -->
+            <div class="project-form-section" id="projectFormSection" style="display: none;">
+                <h3 id="formTitle">Create New Project</h3>
+                <form id="projectForm" class="project-form">
+                    <!-- Basic Info -->
+                    <div class="form-group">
+                        <label for="name">Project Name*</label>
+                        <input type="text" id="name" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="description">Description*</label>
+                        <textarea id="description" required></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="project_type">Project Type*</label>
+                        <select id="project_type" required>
+                            <option value="">Select Type</option>
+                            <option value="brand_deal">Brand Deal</option>
+                            <option value="creative_work">Creative Work</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="status">Status*</label>
+                        <select id="status" required>
+                            <option value="planning">Planning</option>
+                            <option value="in_progress">In Progress</option>
+                            <option value="completed">Completed</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="visibility">Visibility*</label>
+                        <select id="visibility" required>
+                            <option value="public">Public</option>
+                            <option value="private">Private</option>
+                        </select>
+                    </div>
+
+                    <!-- Timeline -->
+                    <div class="form-group">
+                        <label for="timeline">Timeline</label>
+                        <input type="text" id="timeline">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="start_date">Start Date</label>
+                        <input type="date" id="start_date">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="end_date">End Date</label>
+                        <input type="date" id="end_date">
+                    </div>
+
+                    <!-- Brand Deal Fields -->
+                    <div class="brand-deal-fields" style="display: none;">
+                        <!-- Deal Details -->
+                        <h4>Deal Details</h4>
+                        <div class="form-group">
+                            <label for="budget_range">Budget Range</label>
+                            <input type="text" id="budget_range">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="payment_terms">Payment Terms</label>
+                            <textarea id="payment_terms"></textarea>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="payment_format">Payment Format</label>
+                            <input type="text" id="payment_format">
+                        </div>
+
+                        <!-- Campaign Details -->
+                        <h4>Campaign Details</h4>
+                        <div class="form-group">
+                            <label for="target_audience">Target Audience</label>
+                            <select id="target_audience" multiple>
+                                <!-- Options will be populated dynamically -->
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="campaign_goals">Campaign Goals</label>
+                            <select id="campaign_goals" multiple>
+                                <!-- Options will be populated dynamically -->
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Creative Work Fields -->
+                    <div class="creative-work-fields" style="display: none;">
+                        <h4>Content Details</h4>
+                        <div class="form-group">
+                            <label for="content_category">Content Category</label>
+                            <input type="text" id="content_category">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="content_length">Content Length</label>
+                            <input type="text" id="content_length">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="technical_requirements">Technical Requirements</label>
+                            <textarea id="technical_requirements"></textarea>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="equipment_needed">Equipment Needed</label>
+                            <select id="equipment_needed" multiple>
+                                <!-- Options will be populated dynamically -->
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="submit" id="saveButton">Save Project</button>
+                        <button type="button" onclick="cancelEdit()">Cancel</button>
+                    </div>
+                </form>
             </div>
         </div>
     </main>
