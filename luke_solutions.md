@@ -184,4 +184,109 @@ This solution improves both performance and user experience by showing project d
 
 ---
 
+## Project View Authentication Issue
+
+### Issue
+The project view page was returning a 401 Unauthorized error when trying to view project details, even though project viewing should be public.
+
+### Root Causes
+1. The `/api/projects/:id` endpoint was requiring authentication via `authenticateToken` middleware
+2. The frontend was trying to send auth headers for a public route
+
+### Solution
+
+#### 1. Backend Changes (app.js)
+```javascript
+// Changed from:
+app.get('/api/projects/:id', authenticateToken, async (req, res) => {
+    // ... requiring auth and user_id check
+});
+
+// To:
+app.get('/api/projects/:id', async (req, res) => {
+    try {
+        const query = `
+            SELECT p.*, 
+                u.username as creator_name,
+                u.profile_type as creator_type
+            FROM projects p
+            LEFT JOIN users u ON p.user_id = u.id
+            WHERE p.id = $1
+        `;
+        const result = await pool.query(query, [req.params.id]);
+        // ...
+    }
+});
+```
+
+#### 2. Frontend Changes (project-view.js)
+```javascript
+// Changed from:
+const response = await fetch(`/api/projects/${projectId}`, {
+    headers: {
+        'Authorization': `Bearer ${localStorage.getItem('token')}`
+    }
+});
+
+// To:
+const response = await fetch(`/api/projects/${projectId}`);
+// No auth headers needed for public view
+```
+
+### Key Learnings
+1. Not all routes need authentication - public data should be accessible without auth
+2. Separate authentication concerns:
+   - Public routes: No auth required
+   - Protected routes: Require auth token
+   - Admin routes: Require specific permissions
+3. Follow principle of least privilege - only require auth when necessary
+
+### Impact
+- Projects are now publicly viewable
+- Edit functionality still protected behind auth
+- Improved user experience for non-logged-in users
+- Better separation of concerns between public and protected routes
+
+---
+
+## Project Structure Notes for Deployment
+
+### Common Deployment Structure vs. Our Structure
+
+1. **Server Setup**
+```javascript
+// Typically in server.js, but in our project this is in src/app.js:
+const express = require('express');
+const app = express();
+const port = process.env.PORT || 2000;
+// ... server setup continues in app.js
+```
+
+2. **Database Connection**
+```javascript
+// Typically in database.js, but in our project this is in src/app.js:
+const { Pool } = require('pg');
+const pool = new Pool({
+    connectionString: process.env.DATABASE_URL,
+    ssl: process.env.NODE_ENV === 'production' ? {
+        rejectUnauthorized: false
+    } : false
+});
+// ... database connection continues in app.js
+```
+
+### Key Points
+- Our `src/app.js` combines both server and database functionality
+- No need to create separate files as our structure is deployment-ready
+- When deploying to Render/Heroku:
+  - `src/app.js` serves as both server.js and contains database.js functionality
+  - `package.json` already correctly points to `src/app.js` as main entry
+  - Environment variables can be set directly in hosting platform
+
+### Deployment Checklist
+1. Ensure `DATABASE_URL` is set in environment
+2. SSL configuration is already handled in pool setup
+3. Port is already configured to use process.env.PORT
+4. Entry point is correctly set in package.json
+
 Feel free to add more solutions as we continue to work on the project! 
