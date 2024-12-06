@@ -3685,3 +3685,32 @@ main {
     outline: none;
     box-shadow: 0 0 0 2px rgba(0,123,255,0.25);
 }
+
+/* Login page styles */
+.login-footer {
+    text-align: center;
+    margin-top: 20px;
+}
+
+.or-divider {
+    display: block;
+    color: #666;
+    font-size: 0.9em;
+    margin: 15px 0;
+}
+
+.signup-redirect-btn {
+    background-color: transparent;
+    border: 2px solid #007bff;
+    color: #007bff;
+    padding: 8px 24px;
+    border-radius: 20px;
+    font-size: 0.9em;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.signup-redirect-btn:hover {
+    background-color: #007bff;
+    color: white;
+}

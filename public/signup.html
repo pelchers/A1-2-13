@@ -7,23 +7,6 @@
     <link rel="stylesheet" href="/css/styles.css">
 </head>
 <body>
-    <nav class="navbar">
-        <div class="nav-icon-container">
-            <a href="/" class="site-logo">🏠</a>
-        </div>
-        <a href="/explore.html" class="nav-button">Explore</a>
-        <div class="profile-container">
-            <div class="profile-pic"></div>
-        </div>
-        <a href="/leaderboard.html" class="nav-button">Leaderboard</a>
-        <div class="settings-menu">
-            <span class="settings-icon">⚙️</span>
-            <div class="settings-dropdown">
-                <a href="/profile.html">Update Profile</a>
-                <a href="#" id="logoutBtn">Logout</a>
-            </div>
-        </div>
-    </nav>
     <main>
         <h2>Sign Up</h2>
         <form id="signupForm">
@@ -39,17 +22,14 @@
                 <label for="password">Password:</label>
                 <input type="password" id="password" name="password" required>
             </div>
-            <div>
-                <label for="profile_type">Profile Type:</label>
-                <select id="profile_type" name="profile_type" required>
-                    <option value="">Select Type</option>
-                    <option value="creator">Content Creator</option>
-                    <option value="brand">Brand/Business</option>
-                </select>
-            </div>
             <button type="submit">Sign Up</button>
         </form>
+        <div class="login-footer">
+            <span class="or-divider">or</span>
+            <button onclick="window.location.href='/login.html'" class="signup-redirect-btn">Login</button>
+        </div>
     </main>
+    <script src="/components/navbar.js"></script>
     <script src="/js/scripts.js"></script>
 </body>
 </html> 

@@ -1,38 +1,18 @@
 document.addEventListener('DOMContentLoaded', async () => {
     const urlParams = new URLSearchParams(window.location.search);
     const projectId = urlParams.get('id');
-
+    
     if (!projectId) {
         console.error('No project ID found in URL');
         return;
     }
 
-    const currentUserId = await getCurrentUserId();
-    await loadProjectDetails(projectId, currentUserId);
+    await loadProjectDetails(projectId);
 });
 
-async function getCurrentUserId() {
+async function loadProjectDetails(projectId) {
     try {
-        const response = await fetch('/api/profile', {
-            headers: {
-                'Authorization': `Bearer ${localStorage.getItem('token')}`
-            }
-        });
-        const userData = await response.json();
-        return userData.id;
-    } catch (error) {
-        console.error('Error getting current user:', error);
-        return null;
-    }
-}
-
-async function loadProjectDetails(projectId, currentUserId) {
-    try {
-        const response = await fetch(`/api/projects/${projectId}`, {
-            headers: {
-                'Authorization': `Bearer ${localStorage.getItem('token')}`
-            }
-        });
+        const response = await fetch(`/api/projects/${projectId}`);
 
         if (!response.ok) {
             if (response.status === 404) {
@@ -45,17 +25,28 @@ async function loadProjectDetails(projectId, currentUserId) {
         }
 
         const project = await response.json();
-        
-        // Debug log to see what data we're getting
         console.log('Project data:', project);
 
         renderProjectDetails(project);
 
-        // Show the edit button if the user is the creator
-        if (project.user_id === currentUserId) {
-            const editButton = document.getElementById('editProjectButton');
-            editButton.style.display = 'block';
-            editButton.onclick = () => window.location.href = `/projects.html?edit=${project.id}`;
+        // Check if user is logged in and is the creator to show edit button
+        const token = localStorage.getItem('token');
+        if (token) {
+            try {
+                const userResponse = await fetch('/api/profile', {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                if (userResponse.ok) {
+                    const userData = await userResponse.json();
+                    if (project.user_id === userData.id) {
+                        const editButton = document.getElementById('editProjectButton');
+                        editButton.style.display = 'block';
+                        editButton.onclick = () => window.location.href = `/projects.html?edit=${project.id}`;
+                    }
+                }
+            } catch (error) {
+                console.error('Error checking user auth:', error);
+            }
         }
     } catch (error) {
         console.error('Error loading project details:', error);

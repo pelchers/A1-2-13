@@ -638,34 +638,23 @@ app.get('/api/projects', authenticateToken, async (req, res) => {
     }
 });
 
-// Get single project endpoint (make sure this is before any catch-all routes)
-app.get('/api/projects/:projectId', authenticateToken, async (req, res) => {
+// Get single project endpoint - remove authenticateToken middleware
+app.get('/api/projects/:id', async (req, res) => {
     try {
-        const { projectId } = req.params;
-        console.log('Fetching project:', projectId); // Add debug log
+        const projectId = req.params.id;
+        console.log('Fetching project:', projectId);
         
         const query = `
             SELECT p.*, 
                 u.username as creator_name,
-                u.profile_type as creator_type,
-                COUNT(DISTINCT pc.user_id) as collaborator_count,
-                CASE 
-                    WHEN $2 = ANY(p.watcher_ids) THEN true 
-                    ELSE false 
-                END as is_watched
+                u.profile_type as creator_type
             FROM projects p
             LEFT JOIN users u ON p.user_id = u.id
-            LEFT JOIN project_collaborators pc ON p.id = pc.project_id
             WHERE p.id = $1
-            GROUP BY p.id, u.username, u.profile_type, p.name, p.description, 
-                     p.project_type, p.status, p.created_at, p.budget_range,
-                     p.timeline, p.payment_format, p.target_demographics,
-                     p.campaign_goals, p.content_category, p.content_length,
-                     p.technical_requirements, p.user_id, p.watcher_ids
         `;
         
-        const result = await pool.query(query, [projectId, req.user.id]);
-        console.log('Query result:', result.rows); // Add debug log
+        const result = await pool.query(query, [projectId]);
+        console.log('Query result:', result.rows);
         
         if (result.rows.length === 0) {
             return res.status(404).json({ message: 'Project not found' });
