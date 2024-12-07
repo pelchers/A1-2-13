@@ -132,19 +132,27 @@ async function openChatWithUser(userId) {
 
 async function openChat(chatId) {
     try {
-        // Get messages
-        const response = await fetch(`/api/chats/${chatId}/messages`, {
-            headers: {
-                'Authorization': `Bearer ${localStorage.getItem('token')}`
-            }
-        });
-        const messages = await response.json();
+        // Get messages and current user ID
+        const [messagesResponse, profileResponse] = await Promise.all([
+            fetch(`/api/chats/${chatId}/messages`, {
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`
+                }
+            }),
+            fetch('/api/profile', {
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`
+                }
+            })
+        ]);
 
-        // Get chat details to show correct username
+        const messages = await messagesResponse.json();
+        const userData = await profileResponse.json();
+        const currentUserId = userData.id;
+
         const chatCard = document.querySelector(`.chat-card[data-chat-id="${chatId}"]`);
         if (!chatCard) return;
 
-        // Get username from the chat card
         const chatWith = chatCard.querySelector('p').textContent.replace('Chat with ', '');
 
         const chatWindow = document.querySelector('.chat-window');
@@ -152,7 +160,7 @@ async function openChat(chatId) {
             <div class="chat-header">Chat with ${chatWith}</div>
             <div class="messages">
                 ${messages.length > 0 ? messages.map(message => `
-                    <div class="message">
+                    <div class="message ${message.sender_id === currentUserId ? 'sent' : 'received'}">
                         <div class="message-content">${message.content}</div>
                         <span class="message-time">${new Date(message.timestamp).toLocaleTimeString()}</span>
                     </div>
