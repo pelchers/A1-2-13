@@ -16,9 +16,6 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 });
 
-// Ensure all existing chats are loaded
-loadChats();
-
 async function loadChats() {
     try {
         const response = await fetch('/api/chats', {
@@ -27,23 +24,31 @@ async function loadChats() {
             }
         });
         const chats = await response.json();
-        if (!Array.isArray(chats)) throw new Error('Invalid response format');
         
         const chatList = document.querySelector('.chat-list');
         chatList.innerHTML = '<h3>Messages Log</h3>';
 
-        const userId = parseInt(localStorage.getItem('userId'));
+        // Get current user's ID from profile
+        const profileResponse = await fetch('/api/profile', {
+            headers: {
+                'Authorization': `Bearer ${localStorage.getItem('token')}`
+            }
+        });
+        const profileData = await profileResponse.json();
+        const currentUserId = profileData.id;
 
         chats.forEach(chat => {
-            if (chat.messages && chat.messages.length > 0) {
-                const chatWith = chat.user1_id === userId ? chat.user1_username : chat.user2_username;
-                chatList.innerHTML += `
-                    <div class="chat-card" onclick="openChat(${chat.id})" data-chat-id="${chat.id}" data-chat-with="${chatWith}">
-                        <p>Chat with ${chatWith}</p>
-                        <span>Last message preview...</span>
-                    </div>
-                `;
-            }
+            // If current user is user1, show user2's username, and vice versa
+            const chatPartnerUsername = currentUserId === chat.user1_id ? 
+                chat.user2_username : 
+                chat.user1_username;
+
+            chatList.innerHTML += `
+                <div class="chat-card" onclick="openChat(${chat.id})" data-chat-id="${chat.id}">
+                    <p>Chat with ${chatPartnerUsername}</p>
+                    <span>Last message preview...</span>
+                </div>
+            `;
         });
     } catch (error) {
         console.error('Error loading chats:', error);
@@ -127,32 +132,28 @@ async function openChatWithUser(userId) {
 
 async function openChat(chatId) {
     try {
+        // Get messages
         const response = await fetch(`/api/chats/${chatId}/messages`, {
             headers: {
                 'Authorization': `Bearer ${localStorage.getItem('token')}`
             }
         });
         const messages = await response.json();
-        const chatWindow = document.querySelector('.chat-window');
+
+        // Get chat details to show correct username
         const chatCard = document.querySelector(`.chat-card[data-chat-id="${chatId}"]`);
+        if (!chatCard) return;
 
-        if (!chatCard) {
-            console.error('Chat card not found');
-            return;
-        }
+        // Get username from the chat card
+        const chatWith = chatCard.querySelector('p').textContent.replace('Chat with ', '');
 
-        const chatWith = chatCard.dataset.chatWith;
-
-        // Highlight the active chat card
-        document.querySelectorAll('.chat-card').forEach(card => card.classList.remove('active'));
-        chatCard.classList.add('active');
-
+        const chatWindow = document.querySelector('.chat-window');
         chatWindow.innerHTML = `
-            <div class="chat-header">${chatWith}</div>
+            <div class="chat-header">Chat with ${chatWith}</div>
             <div class="messages">
                 ${messages.length > 0 ? messages.map(message => `
                     <div class="message">
-                        <span class="message-content">${message.content}</span>
+                        <div class="message-content">${message.content}</div>
                         <span class="message-time">${new Date(message.timestamp).toLocaleTimeString()}</span>
                     </div>
                 `).join('') : '<p>No messages yet. Start the conversation!</p>'}
@@ -162,6 +163,10 @@ async function openChat(chatId) {
                 <button onclick="sendMessage(${chatId})">Send</button>
             </div>
         `;
+
+        // Scroll to bottom of messages
+        const messagesContainer = chatWindow.querySelector('.messages');
+        messagesContainer.scrollTop = messagesContainer.scrollHeight;
     } catch (error) {
         console.error('Error opening chat:', error);
     }

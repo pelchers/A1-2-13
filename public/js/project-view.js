@@ -160,8 +160,12 @@ function renderCreativeWorkDetails(project) {
 }
 
 function renderArrayAsTags(array) {
-    if (!array || array.length === 0) return '<span class="empty-tag">None specified</span>';
-    return array.map(item => `<span class="tag">${item}</span>`).join('');
+    if (!array || array.length === 0) {
+        return '<div class="tag-container"><span class="empty-tag">None specified</span></div>';
+    }
+    return `<div class="tag-container">
+        ${array.map(item => `<span class="tag">${item}</span>`).join('')}
+    </div>`;
 }
 
 function formatDate(dateString) {
