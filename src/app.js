@@ -1148,6 +1148,53 @@ app.put('/api/profile', authenticateToken, async (req, res) => {
     }
 });
 
+// Get users watching current user
+app.get('/api/watches/watchers', authenticateToken, async (req, res) => {
+    try {
+        const result = await pool.query(`
+            SELECT * FROM users 
+            WHERE $1 = ANY(watched_by_ids)
+        `, [req.user.id]);
+        res.json(result.rows);
+    } catch (error) {
+        res.status(500).json({ message: 'Server error' });
+    }
+});
+
+// Get users that current user watches
+app.get('/api/watches/watching', authenticateToken, async (req, res) => {
+    try {
+        const result = await pool.query(`
+            SELECT * FROM users 
+            WHERE id = ANY(
+                SELECT unnest(watching_ids) 
+                FROM users 
+                WHERE id = $1
+            )
+        `, [req.user.id]);
+        res.json(result.rows);
+    } catch (error) {
+        res.status(500).json({ message: 'Server error' });
+    }
+});
+
+// Get projects that current user watches
+app.get('/api/watches/projects', authenticateToken, async (req, res) => {
+    try {
+        const result = await pool.query(`
+            SELECT * FROM projects 
+            WHERE id = ANY(
+                SELECT unnest(watched_project_ids) 
+                FROM users 
+                WHERE id = $1
+            )
+        `, [req.user.id]);
+        res.json(result.rows);
+    } catch (error) {
+        res.status(500).json({ message: 'Server error' });
+    }
+});
+
 app.listen(port, () => {
     console.log(`Server running on port ${port}`);
 }); 

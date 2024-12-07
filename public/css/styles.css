@@ -343,6 +343,7 @@ button:hover {
     min-height: 120px;
     border-radius: 50%;
     margin: 20px auto;
+    margin-top: 20;
     overflow: hidden;
     display: flex;
     align-items: center;
@@ -1015,7 +1016,8 @@ button:hover {
     width: 100px;
     height: 100px;
     border-radius: 50%;
-    margin: 0 auto 15px;
+    margin-top: 40px;
+    margin-bottom: -20;
     overflow: hidden;
     display: flex;
     align-items: center;
@@ -1131,7 +1133,7 @@ button:hover {
 /* Update Watch Button Styles */
 .watch-button {
     position: absolute;
-    top: 15px;
+    top: -5px;
     right: -5px;
     background: none;
     border: none;
@@ -2252,7 +2254,7 @@ main {
 /* Watch Button Styles */
 .watch-button {
     position: absolute;
-    top: 15px;
+    top: 0px;
     right: 15px;
     background: none;
     border: none;
@@ -2289,7 +2291,7 @@ main {
 
 .watch-count {
     font-size: 0.9em;
-    color: #333;
+    color: #ffffff;
     font-weight: 500;
 } 
 
@@ -4166,4 +4168,44 @@ main {
     font-size: 0.8em;
     color: #888;
     margin-top: 4px;
+}
+
+/* Watches Page Styles */
+.watches-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.watches-section {
+    margin-bottom: 40px;
+}
+
+.watches-section h2 {
+    color: #333;
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #07543D;
+}
+
+.profile-grid, .project-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
+    padding: 20px 0;
+}
+
+.watch-button {
+    background: #07543D;
+    color: white;
+    border: none;
+    padding: 8px 0px;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    margin-top: 10px;
+}
+
+.watch-button:hover {
+    background: #053d2c;
 }
