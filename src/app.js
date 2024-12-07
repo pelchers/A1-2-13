@@ -1151,12 +1151,17 @@ app.put('/api/profile', authenticateToken, async (req, res) => {
 // Get users watching current user
 app.get('/api/watches/watchers', authenticateToken, async (req, res) => {
     try {
+        //Get users where current user's ID is in their watching_ids
         const result = await pool.query(`
-            SELECT * FROM users 
-            WHERE $1 = ANY(watched_by_ids)
+            SELECT 
+                u.*,
+                true as is_watched -- They're watching us, so we're watching them
+            FROM users u 
+            WHERE $1 = ANY(u.watching_ids)
         `, [req.user.id]);
         res.json(result.rows);
     } catch (error) {
+        console.error('Error fetching watchers:', error);
         res.status(500).json({ message: 'Server error' });
     }
 });
@@ -1164,9 +1169,13 @@ app.get('/api/watches/watchers', authenticateToken, async (req, res) => {
 // Get users that current user watches
 app.get('/api/watches/watching', authenticateToken, async (req, res) => {
     try {
+        // Get current user's watching_ids and fetch those users
         const result = await pool.query(`
-            SELECT * FROM users 
-            WHERE id = ANY(
+            SELECT 
+                u.*,
+                true as is_watched -- We're watching them
+            FROM users u 
+            WHERE u.id = ANY(
                 SELECT unnest(watching_ids) 
                 FROM users 
                 WHERE id = $1
@@ -1174,6 +1183,7 @@ app.get('/api/watches/watching', authenticateToken, async (req, res) => {
         `, [req.user.id]);
         res.json(result.rows);
     } catch (error) {
+        console.error('Error fetching watching:', error);
         res.status(500).json({ message: 'Server error' });
     }
 });

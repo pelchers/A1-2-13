@@ -2255,7 +2255,7 @@ main {
 .watch-button {
     position: absolute;
     top: 0px;
-    right: 15px;
+    right: -30px;
     background: none;
     border: none;
     cursor: pointer;
