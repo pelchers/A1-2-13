@@ -289,4 +289,62 @@ const pool = new Pool({
 3. Port is already configured to use process.env.PORT
 4. Entry point is correctly set in package.json
 
+---
+
+## Chat Message Container Issue
+
+### Issue
+Messages in the chat window were appearing outside their container, specifically in the top-right corner of the page instead of within the messages div.
+
+### Root Cause
+The chat window layout needed proper containment and structure to keep messages within their designated container.
+
+### Solution
+Updated the CSS for chat window components to properly contain messages:
+
+```css
+/* Chat Window Layout */
+.chat-window {
+    width: 70%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    background: white;
+    overflow: hidden; /* Key fix: Contain everything inside */
+}
+
+/* Messages Container */
+.messages {
+    flex: 1;
+    overflow-y: auto;
+    padding: 20px;
+    margin-top: 50px; /* Space for header */
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    height: calc(100% - 100px); /* Account for header and input */
+}
+
+/* Individual Message */
+.message {
+    position: relative;
+    max-width: 70%;
+    margin-bottom: 10px;
+    align-self: flex-start;
+}
+```
+
+### Key Changes
+1. Added `overflow: hidden` to chat window to contain all content
+2. Set proper height calculation for messages container
+3. Used flexbox for proper layout structure
+4. Added relative positioning for message containment
+5. Maintained proper spacing with margin and padding
+
+### Impact
+- Messages now appear within their container
+- Proper scrolling behavior maintained
+- Chat layout remains intact
+- Messages properly aligned and spaced
+
 Feel free to add more solutions as we continue to work on the project! 
