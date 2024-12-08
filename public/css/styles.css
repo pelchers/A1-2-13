@@ -2161,6 +2161,7 @@ main {
 
 .hero-title {
     color: var(--brand-primary); /* Teal for main title */
+    color: white;
 }
 
 .curved-shape {
@@ -4212,4 +4213,105 @@ main {
 
 .watch-button:hover {
     background: #053d2c;
+}
+
+/* Hero Section Styles */
+.hero {
+    background: linear-gradient(135deg, #07543D 0%, #053d2c 100%);
+    padding: 60px 20px;
+    margin-bottom: 40px;
+    border-radius: 0 0 30px 30px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.hero-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    text-align: center;
+    color: white;
+}
+
+.hero-title {
+    font-size: 2.5rem;
+    margin-bottom: 30px;
+    font-weight: 600;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+.quick-stats {
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    margin-bottom: 40px;
+}
+
+.stat-card {
+    background: rgba(255, 255, 255, 0.95); /* Almost solid white background */
+    padding: 20px 40px;
+    border-radius: 15px;
+    -webkit-backdrop-filter: blur(5px); /* For Safari support */
+    backdrop-filter: blur(5px);
+    transition: transform 0.3s ease;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.stat-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 16px rgba(0,0,0,0.15);
+}
+
+.stat-value {
+    display: block;
+    font-size: 2rem;
+    font-weight: bold;
+    margin-bottom: 5px;
+    color: #333; /* Dark text for better contrast */
+}
+
+.stat-label {
+    font-size: 0.9rem;
+    color: #555; /* Darker text for better contrast */
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-weight: 500;
+}
+
+.action-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    margin-top: 30px;
+}
+
+.cta-button {
+    padding: 12px 30px;
+    border-radius: 25px;
+    font-size: 1rem;
+    font-weight: 500;
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+
+.cta-button:not(.secondary) {
+    background: white;
+    color: #07543D;
+}
+
+.cta-button.secondary {
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.cta-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+.cta-button:not(.secondary):hover {
+    background: #f0f0f0;
+}
+
+.cta-button.secondary:hover {
+    background: rgba(255, 255, 255, 0.2);
 }

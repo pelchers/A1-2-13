@@ -335,7 +335,9 @@ app.get('/api/profile', authenticateToken, async (req, res) => {
                 budget_range,
                 preferred_creator_types,
                 campaign_goals,
-                collaboration_requirements
+                collaboration_requirements,
+                watching_ids,
+                watched_project_ids
             FROM users 
             WHERE id = $1`;
             
