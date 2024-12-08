@@ -131,17 +131,26 @@ document.addEventListener('DOMContentLoaded', async () => {
 // Function to load user metrics
 async function loadUserMetrics(userId) {
     try {
-        const response = await fetch(`/api/users/${userId}/metrics`, {
+        const response = await fetch(`/api/users/${userId}/public`, {
             headers: {
                 'Authorization': `Bearer ${localStorage.getItem('token')}`
             }
         });
-        const metrics = await response.json();
         
-        // Update metrics display
-        document.getElementById('followerCount').textContent = metrics.follower_count || 0;
-        document.getElementById('viewCount').textContent = metrics.view_count || 0;
-        document.getElementById('watchCount').textContent = metrics.watch_count || 0;
+        if (!response.ok) throw new Error('Failed to fetch user metrics');
+        
+        const userData = await response.json();
+        
+        // Update metrics display using the same fields as profile cards
+        document.getElementById('followerCount').textContent = 
+            (userData.follower_count || 0).toLocaleString();
+        
+        document.getElementById('viewCount').textContent = 
+            (userData.view_count || 0).toLocaleString();
+        
+        document.getElementById('watchCount').textContent = 
+            (userData.account_watchers || 0).toLocaleString();
+            
     } catch (error) {
         console.error('Error loading metrics:', error);
     }
@@ -221,7 +230,6 @@ function renderProjectsList(projects) {
         </div>
     `).join('');
 }
-
 // Utility function for date formatting
 function formatDate(dateString) {
     const date = new Date(dateString);

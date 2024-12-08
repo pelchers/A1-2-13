@@ -94,6 +94,7 @@ button:hover {
     margin-bottom: 10px;
 }
 
+
 /* Leaderboard Styles */
 .leader-card {
     display: flex;
@@ -377,7 +378,7 @@ button:hover {
     text-align: center;
 }
 
-.user-info h3 {
+.user-info {
     margin-bottom: 5px;
     font-size: 1.2em;
 }
@@ -2628,7 +2629,7 @@ main {
 }
 
 .stat-value {
-    font-size: 2.5em;
+    font-size: 1.5em;
     font-weight: bold;
     color: #07543D;
     display: block;
@@ -3080,12 +3081,14 @@ main {
 
 .project-info {
     padding: 1.5rem;
+    height:750px;
+    font-size: 1.5em;
 }
 
 .project-info h3 {
     margin: 0 0 1rem;
     color: #333;
-    font-size: 1.2rem;
+    font-size: 1.75rem;
 }
 
 .project-meta {
@@ -3113,7 +3116,8 @@ main {
 }
 
 .project-stats {
-    display: grid;
+    display: flex-grid;
+    grid
     grid-template-columns: repeat(3, 1fr);
     gap: 1rem;
     padding: 1rem;
@@ -3392,9 +3396,9 @@ main {
 /* Project Card Styles */
 .project-card {
     perspective: 1500px;
-    height: auto;
-    min-height: 500px;
-    max-height: 600px;
+    
+    min-height: 900px;
+    max-height: 900px;
     margin-bottom: 30px;
     cursor: pointer;
     width: 100%;

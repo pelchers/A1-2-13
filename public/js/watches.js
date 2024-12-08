@@ -155,22 +155,108 @@ function createCreatorMetrics(user) {
 
 function createProjectCard(project) {
     return `
-        <div class="project-card">
-            <div class="project-header">
-                <h3>${project.name}</h3>
-                <span class="project-type-badge ${project.project_type}">
-                    ${project.project_type === 'brand_deal' ? '🤝 Brand Deal' : '🎨 Creative Work'}
-                </span>
+        <div class="project-card" 
+             data-searchable="${project.name} ${project.description || ''} ${project.project_type || ''} ${project.creator_name || ''}"
+             data-creator-type="${project.creator_type}"
+             onclick="window.location.href='/project-view.html?id=${project.id}'">
+            <div class="card-inner">
+                <div class="card-front">
+                    <div class="project-info">
+                        <button 
+                            class="watch-button watching" 
+                            onclick="handleProjectWatch(${project.id}, event)"
+                            title="Unwatch this project"
+                            type="button"
+                        >
+                            <span class="watch-icon">⭐</span>
+                            <span class="watch-count">${project.watch_count || 0}</span>
+                        </button>
+
+                        <h3>${project.name}</h3>
+                        <div class="project-meta">
+                            <span class="project-type-badge ${project.project_type}">
+                                ${project.project_type === 'brand_deal' ? '🤝 Brand Deal' : '🎨 Creative Work'}
+                            </span>
+                            <span class="creator-type-badge ${project.creator_type}">
+                                ${project.creator_type === 'brand' ? '🏢' : '🎨'}
+                            </span>
+                        </div>
+                        <p class="project-description">${project.description || 'No description available'}</p>
+                        <div class="project-stats">
+                            <div class="stat">
+                                <span class="stat-icon">👥</span>
+                                <span class="stat-value">${project.collaborator_count || 0}</span>
+                                <span class="stat-label">Collaborators</span>
+                            </div>
+                            <div class="stat">
+                                <span class="stat-icon">📅</span>
+                                <span class="stat-value">${formatDate(project.created_at)}</span>
+                                <span class="stat-label">Created</span>
+                            </div>
+                            <div class="stat">
+                                <span class="stat-icon">📊</span>
+                                <span class="stat-value">${project.status}</span>
+                                <span class="stat-label">Status</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-flip-hint">Click to see more details</div>
+                </div>
             </div>
-            <p class="project-description">${project.description}</p>
-            <div class="project-meta">
-                <span class="status-badge ${project.status}">${project.status}</span>
-            </div>
-            <button onclick="toggleProjectWatch(${project.id})" class="watch-button">
-                Unwatch
-            </button>
         </div>
     `;
+}
+
+// Add date formatting helper
+function formatDate(dateString) {
+    if (!dateString) return 'N/A';
+    const date = new Date(dateString);
+    return date.toLocaleDateString('en-US', { 
+        year: 'numeric', 
+        month: 'short', 
+        day: 'numeric' 
+    });
+}
+
+// Update project watch handler
+window.handleProjectWatch = async function(projectId, event) {
+    event.preventDefault();
+    event.stopPropagation();
+    
+    if (!localStorage.getItem('token')) {
+        window.location.href = '/login.html';
+        return;
+    }
+
+    try {
+        const response = await fetch(`/api/projects/${projectId}/watch`, {
+            method: 'POST',
+            headers: {
+                'Authorization': `Bearer ${localStorage.getItem('token')}`
+            }
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+            throw new Error(data.message || 'Failed to update watch status');
+        }
+
+        // Update button state and icon
+        const watchButton = event.target.closest('.watch-button');
+        if (watchButton) {
+            watchButton.classList.toggle('watching', data.isWatching);
+            const watchCount = watchButton.querySelector('.watch-count');
+            if (watchCount) {
+                watchCount.textContent = data.watchCount || 0;
+            }
+        }
+
+        showMessage(data.message, 'success');
+    } catch (error) {
+        console.error('Error:', error);
+        showMessage(error.message || 'Failed to update watch status', 'error');
+    }
 }
 
 async function toggleWatch(userId, event) {
@@ -254,24 +340,6 @@ function showMessage(message, type = 'info') {
 
 // Make sure handleUserWatch is available globally
 window.handleUserWatch = toggleWatch;
-
-async function toggleProjectWatch(projectId) {
-    try {
-        const response = await fetch(`/api/watches/project/${projectId}`, {
-            method: 'POST',
-            headers: {
-                'Authorization': `Bearer ${localStorage.getItem('token')}`
-            }
-        });
-        
-        if (!response.ok) throw new Error('Failed to toggle project watch');
-        
-        // Reload watches to update UI
-        loadWatches();
-    } catch (error) {
-        console.error('Error toggling project watch:', error);
-    }
-}
 
 function getRandomEmoji() {
     const emojis =['👤', '🎨', '🎯', '🎬', '📱', '💡'];
