@@ -4379,3 +4379,152 @@ main {
     -webkit-line-clamp: 3;
     -webkit-box-orient: vertical;
 }
+
+/* Plans Page Styles */
+.plans-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 40px 20px;
+}
+
+.plans-container h1 {
+    text-align: center;
+    color: #333;
+    margin-bottom: 40px;
+}
+
+.plans-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 30px;
+    padding: 20px;
+}
+
+.plan-card {
+    background: white;
+    border-radius: 15px;
+    padding: 30px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+}
+
+.plan-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 16px rgba(0,0,0,0.15);
+}
+
+.plan-card.featured {
+    border: 2px solid #07543D;
+    transform: scale(1.05);
+}
+
+.popular-badge {
+    position: absolute;
+    top: -12px;
+    right: 20px;
+    background: #07543D;
+    color: white;
+    padding: 5px 15px;
+    border-radius: 20px;
+    font-size: 0.9em;
+}
+
+.plan-header {
+    text-align: center;
+    margin-bottom: 30px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid #eee;
+}
+
+.plan-header h2 {
+    color: #333;
+    margin-bottom: 10px;
+}
+
+.price {
+    font-size: 2em;
+    font-weight: bold;
+    color: #07543D;
+    margin: 10px 0;
+}
+
+.subtitle {
+    color: #666;
+    font-size: 0.9em;
+}
+
+.plan-features {
+    flex-grow: 1;
+}
+
+.plan-features h3 {
+    color: #333;
+    margin-bottom: 20px;
+    font-size: 1.1em;
+}
+
+.plan-features ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.plan-features li {
+    margin-bottom: 15px;
+    color: #555;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.plan-features li.disabled {
+    color: #999;
+}
+
+.feature-icon {
+    color: #07543D;
+    font-weight: bold;
+}
+
+li.disabled .feature-icon {
+    color: #999;
+}
+
+.select-plan-btn {
+    width: 100%;
+    padding: 15px;
+    border: none;
+    border-radius: 8px;
+    background: #07543D;
+    color: white;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    margin-top: 30px;
+}
+
+.select-plan-btn:hover {
+    background: #053d2c;
+}
+
+.select-plan-btn.featured {
+    background: #07543D;
+}
+
+.select-plan-btn.enterprise {
+    background: #333;
+}
+
+@media (max-width: 768px) {
+    .plans-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .plan-card.featured {
+        transform: none;
+    }
+}
+

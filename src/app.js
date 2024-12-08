@@ -1207,6 +1207,15 @@ app.get('/api/watches/projects', authenticateToken, async (req, res) => {
     }
 });
 
+// Add this route with authentication middleware
+app.get('/plans.html', (req, res, next) => {
+    // Check if user is logged in by looking for token in cookie/localStorage
+    if (!req.headers.authorization) {
+        return res.redirect('/login.html');
+    }
+    next();
+});
+
 app.listen(port, () => {
     console.log(`Server running on port ${port}`);
 }); 
