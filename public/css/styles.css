@@ -2706,6 +2706,17 @@ main {
     margin: 20px 0;
 }
 
+/* Carousel Item Styles */
+.carousel-item {
+    cursor: pointer;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.carousel-item:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
 .section-header {
     display: flex;
     justify-content: space-between;

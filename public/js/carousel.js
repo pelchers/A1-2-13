@@ -80,7 +80,7 @@ function renderCarouselItems(type, items) {
     carousel.innerHTML = items.map(item => {
         if (type === 'projects') {
             return `
-                <div class="carousel-item">
+                <div class="carousel-item" onclick="window.location.href='/project-view.html?id=${item.id}'">
                     <div class="carousel-item-header">
                         <h3>${item.name}</h3>
                         <p>${item.description || 'No description available'}</p>
@@ -94,7 +94,7 @@ function renderCarouselItems(type, items) {
             `;
         } else {
             return `
-                <div class="carousel-item">
+                <div class="carousel-item" onclick="window.location.href='/public-profile.html?id=${item.id}'">
                     <div class="carousel-item-header">
                         <h3>${item.display_name || item.username}</h3>
                         <p>${type === 'creators' ? 'Creator' : 'Brand'}</p>
