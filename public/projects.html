@@ -16,7 +16,7 @@
                     <h2>Your Projects</h2>
                     <button onclick="showProjectForm()" class="new-project-btn">+ New Project</button>
                 </div>
-                <div id="projectsList" class="projects-list">
+                <div id="projectsList" class="projects-list projects-page-cards">
                     <!-- Projects will be loaded here -->
                 </div>
             </div>
@@ -100,17 +100,42 @@
                         <!-- Campaign Details -->
                         <h4>Campaign Details</h4>
                         <div class="form-group">
-                            <label for="target_audience">Target Audience</label>
-                            <select id="target_audience" multiple>
-                                <!-- Options will be populated dynamically -->
-                            </select>
+                            <label>Campaign Focus</label>
+                            <div class="button-select" id="campaign_details_container">
+                                <button type="button" data-value="Brand Awareness" class="select-button">Brand Awareness</button>
+                                <button type="button" data-value="Product Launch" class="select-button">Product Launch</button>
+                                <button type="button" data-value="Lead Generation" class="select-button">Lead Generation</button>
+                                <button type="button" data-value="Sales Conversion" class="select-button">Sales Conversion</button>
+                                <button type="button" data-value="Community Engagement" class="select-button">Community Engagement</button>
+                                <button type="button" data-value="Content Creation" class="select-button">Content Creation</button>
+                            </div>
                         </div>
 
                         <div class="form-group">
-                            <label for="campaign_goals">Campaign Goals</label>
-                            <select id="campaign_goals" multiple>
-                                <!-- Options will be populated dynamically -->
-                            </select>
+                            <label>Campaign Goals</label>
+                            <div class="button-select" id="campaign_goals_container">
+                                <button type="button" data-value="Brand Awareness" class="select-button">Brand Awareness</button>
+                                <button type="button" data-value="Lead Generation" class="select-button">Lead Generation</button>
+                                <button type="button" data-value="Sales" class="select-button">Sales</button>
+                                <button type="button" data-value="Engagement" class="select-button">Engagement</button>
+                                <button type="button" data-value="Product Launch" class="select-button">Product Launch</button>
+                                <button type="button" data-value="Community Building" class="select-button">Community Building</button>
+                                <button type="button" data-value="Education" class="select-button">Education</button>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Target Audience</label>
+                            <div class="button-select" id="target_audience_container">
+                                <button type="button" data-value="Gen Z" class="select-button">Gen Z</button>
+                                <button type="button" data-value="Millennials" class="select-button">Millennials</button>
+                                <button type="button" data-value="Gen X" class="select-button">Gen X</button>
+                                <button type="button" data-value="Parents" class="select-button">Parents</button>
+                                <button type="button" data-value="Students" class="select-button">Students</button>
+                                <button type="button" data-value="Professionals" class="select-button">Professionals</button>
+                                <button type="button" data-value="Tech Enthusiasts" class="select-button">Tech Enthusiasts</button>
+                                <button type="button" data-value="Fashion Enthusiasts" class="select-button">Fashion Enthusiasts</button>
+                            </div>
                         </div>
                     </div>
 
@@ -133,10 +158,15 @@
                         </div>
 
                         <div class="form-group">
-                            <label for="equipment_needed">Equipment Needed</label>
-                            <select id="equipment_needed" multiple>
-                                <!-- Options will be populated dynamically -->
-                            </select>
+                            <label>Equipment Needed</label>
+                            <div class="button-select" id="equipment_needed_container">
+                                <button type="button" data-value="Camera" class="select-button">Camera</button>
+                                <button type="button" data-value="Microphone" class="select-button">Microphone</button>
+                                <button type="button" data-value="Lighting" class="select-button">Lighting</button>
+                                <button type="button" data-value="Editing Software" class="select-button">Editing Software</button>
+                                <button type="button" data-value="Green Screen" class="select-button">Green Screen</button>
+                                <button type="button" data-value="Studio Space" class="select-button">Studio Space</button>
+                            </div>
                         </div>
                     </div>
 

@@ -4,6 +4,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     await loadProjects();
     initializeProjectForm();
     initializeFormSelections();
+    initializeButtonSelects();
 });
 
 // Initialize form and event listeners
@@ -115,12 +116,13 @@ async function handleProjectSubmit(e) {
         budget_range: document.getElementById('budget_range')?.value,
         payment_terms: document.getElementById('payment_terms')?.value,
         payment_format: document.getElementById('payment_format')?.value,
-        target_audience: getMultiSelectValues('target_audience'),
-        campaign_goals: getMultiSelectValues('campaign_goals'),
+        target_audience: getSelectedValues('target_audience_container'),
+        campaign_goals: getSelectedValues('campaign_goals_container'),
         content_category: document.getElementById('content_category')?.value,
         content_length: document.getElementById('content_length')?.value,
         technical_requirements: document.getElementById('technical_requirements')?.value,
-        equipment_needed: getMultiSelectValues('equipment_needed')
+        equipment_needed: getMultiSelectValues('equipment_needed'),
+        campaign_details: getSelectedValues('campaign_details_container'),
     };
 
     try {
@@ -143,7 +145,6 @@ async function handleProjectSubmit(e) {
 
         showMessage(`Project ${currentProjectId ? 'updated' : 'created'} successfully!`, 'success');
         await loadProjects();
-        cancelEdit();
     } catch (error) {
         console.error('Error:', error);
         showMessage(error.message, 'error');
@@ -228,8 +229,9 @@ function populateForm(project) {
         document.getElementById('budget_range').value = project.budget_range || '';
         document.getElementById('payment_terms').value = project.payment_terms || '';
         document.getElementById('payment_format').value = project.payment_format || '';
+        setSelectedButtons('campaign_goals_container', project.campaign_goals);
         setMultiSelectValues('target_audience', project.target_audience);
-        setMultiSelectValues('campaign_goals', project.campaign_goals);
+        setSelectedButtons('target_audience_container', project.target_audience);
     }
 
     // Creative work fields
@@ -239,6 +241,9 @@ function populateForm(project) {
         document.getElementById('technical_requirements').value = project.technical_requirements || '';
         setMultiSelectValues('equipment_needed', project.equipment_needed);
     }
+
+    setSelectedButtons('campaign_details_container', project.campaign_details);
+    setSelectedButtons('equipment_needed_container', project.equipment_needed);
 }
 
 function populateSelectOptions(elementId, options) {
@@ -283,5 +288,34 @@ function showMessage(message, type) {
     container.appendChild(messageDiv);
     
     setTimeout(() => messageDiv.remove(), 3000);
+}
+
+// Add helper function to get selected values from button groups
+function getSelectedValues(containerId) {
+    const container = document.getElementById(containerId);
+    return Array.from(container.querySelectorAll('.select-button.selected'))
+                .map(button => button.dataset.value);
+}
+
+// Add function to set selected buttons when editing
+function setSelectedButtons(containerId, values) {
+    if (!values) return;
+    const container = document.getElementById(containerId);
+    container.querySelectorAll('.select-button').forEach(button => {
+        if (values.includes(button.dataset.value)) {
+            button.classList.add('selected');
+        }
+    });
+}
+
+// Initialize button select functionality
+function initializeButtonSelects() {
+    document.querySelectorAll('.button-select').forEach(container => {
+        container.querySelectorAll('.select-button').forEach(button => {
+            button.addEventListener('click', () => {
+                button.classList.toggle('selected');
+            });
+        });
+    });
 }
   
